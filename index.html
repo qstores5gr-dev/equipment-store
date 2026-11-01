@@ -713,6 +713,31 @@ function doPost(e) {
             link.click();
             document.body.removeChild(link);
         }
+        // වෙබ් පේජ් එක ලෝඩ් වූ වහාම data.json එකෙන් දත්ත ලබා ගැනීම
+  document.addEventListener("DOMContentLoaded", function() {
+      fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            console.log("දත්ත සාර්ථකව ලැබුණි:", data);
+            displayDataOnScreen(data);
+        })
+        .catch(error => console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error));
+  });
+
+  function displayDataOnScreen(items) {
+      const tableBody = document.getElementById('ledger-table-body');
+      if (!tableBody) return;
+      
+      tableBody.innerHTML = '';
+      items.forEach(item => {
+          let row = `<tr>
+              <td>${item.date}</td>
+              <td>${item.description}</td>
+              <td>${item.revenue}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+      });
+  }
     </script>
 </body>
 </html>
