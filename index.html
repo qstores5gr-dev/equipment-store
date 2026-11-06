@@ -714,33 +714,311 @@ function doPost(e) {
             document.body.removeChild(link);
         }
  // වෙබ් පිටුව ලෝඩ් වූ වහාම Google Apps Script එක හරහා Google Sheet එකෙන් සජීවීව දත්ත ලබා ගැනීම
-document.addEventListener("DOMContentLoaded", function () {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbyM3LkhoZzNuLFZbaYSH9yt8RNnEI-OhgNayQazSwfAeGs0i6gRV24tsNc1bAyCCtHeGg/exec";
+        <script>
+    // Local Data Storage array
+    let storeData = [];
 
-    fetch(scriptUrl)
-        .then(response => response.json())
-        .then(data => {
-            console.log("දත්ත සාර්ථකව ලැබුණි:", data);
-            displayDataOnScreen(data); // තිරයේ දත්ත පෙන්වන ඔබගේ මුල් ෆන්ක්ෂන් එක
+    // Local Storage setup & Webhook URL loading
+    document.addEventListener("DOMContentLoaded", function () {
+        // Set today's date in form
+        const dateInput = document.getElementById('field-date');
+        if (dateInput) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+
+        // Web App URL setup
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbyM3LkhoZzNuLFZbaYSH9yt8RNnEI-OhgNayQazSwfAeGs0i6gRV24tsNc1bAyCCtHeGg/exec";
+        const webhookInput = document.getElementById('sheet-webhook-url');
+        if (webhookInput) {
+            webhookInput.value = scriptUrl;
+        }
+
+        // Fetch Live Data from Google Apps Script
+        fetchLiveData(scriptUrl);
+    });
+
+    // Fetch Live Data Function
+    function fetchLiveData(url) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log("සජීවී දත්ත ලැබුණි:", data);
+                if (Array.isArray(data)) {
+                    storeData = data;
+                } else {
+                    storeData = [];
+                }
+                renderTable();
+            })
+            .catch(error => {
+                console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error);
+                renderTable();
+            });
+    }
+
+    // Section Switching Function
+    function showSection(sectionId) {
+        document.getElementById('section-dashboard').classList.add('hidden');
+        document.getElementById('section-form').classList.add('hidden');
+        document.getElementById('section-ledger-view').classList.add('hidden');
+        document.getElementById('section-sheet-config').classList.add('hidden');
+
+        const activeSection = document.getElementById('section-' + sectionId);
+        if (activeSection) {
+            activeSection.classList.remove('hidden');
+        }
+
+        if (sectionId === 'ledger-view') {
+            renderTable();
+        }
+    }
+
+    // Open Specific Ledger Form
+    function openLedgerForm(ledgerName) {
+        showSection('form');
+        const ledgerSelect = document.getElementById('field-ledger');
+        if (ledgerSelect) {
+            ledgerSelect.value = ledgerName;
+        }
+        const titleText = document.getElementById('form-title-text');
+        if (titleText) {
+            titleText.innerText = ledgerName + " - දත්ත ඇතුළත් කිරීම";
+        }
+        calculateBalance();
+    }
+
+    // Store Balance Auto Calculation
+    function calculateBalance() {
+        const total = parseFloat(document.getElementById('field-total-qty').value) || 0;
+        const issued = parseFloat(document.getElementById('field-issued-qty').value) || 0;
+        const balanceField = document.getElementById('field-balance');
+        if (balanceField) {
+            balanceField.value = total - issued;
+        }
+    }
+
+    // Render Data Table Function (Corrected mapping for Sinhala Headers & English Keys)
+    function renderTable() {
+        const tableBody = document.getElementById('ledger-table-body');
+        const emptyMsg = document.getElementById('table-empty-msg');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = '';
+
+        const selectedLedger = document.getElementById('view-filter-ledger').value;
+        const searchQuery = document.getElementById('view-search-input').value.toLowerCase().trim();
+
+        // Filter Data
+        const filteredData = storeData.filter(item => {
+            // Support both Sinhala header key and English JSON key fallback
+            const itemLedger = item["ලෙජරය"] || item.ledger || '';
+            const itemName = (item["අයිතමය"] || item.item || '').toString().toLowerCase();
+            const itemLoc = (item["නිකුත් කර ඇති ස්ථානය"] || item.location || '').toString().toLowerCase();
+            const itemSerial = (item["සීරියල් අංකය"] || item.serial || '').toString().toLowerCase();
+
+            const matchesLedger = (selectedLedger === 'ALL' || itemLedger === selectedLedger);
+            const matchesSearch = itemName.includes(searchQuery) || itemLoc.includes(searchQuery) || itemSerial.includes(searchQuery);
+
+            return matchesLedger && matchesSearch;
+        });
+
+        if (filteredData.length === 0) {
+            if (emptyMsg) emptyMsg.classList.remove('hidden');
+            return;
+        } else {
+            if (emptyMsg) emptyMsg.classList.add('hidden');
+        }
+
+        // Render Rows with exact mappings to Google Sheet headers
+        filteredData.forEach((item, index) => {
+            const dateVal = item["දිනය"] || item.date || '';
+            const ledgerVal = item["ලෙජරය"] || item.ledger || '';
+            const itemVal = item["අයිතමය"] || item.item || '';
+            const serialVal = item["සීරියල් අංකය"] || item.serial || '-';
+            const catalogVal = item["නාමාවලි අංකය"] || item.catalog || '-';
+            const assetVal = item["ස්ථාවර වත්කම් අංකය"] || item.asset || '-';
+            const totalQtyVal = item["ප්‍රමාණය"] || item.totalQty || 0;
+            const issuedQtyVal = item["නිකුත් කිරීමේ ප්‍රමාණය"] || item["නිකුත් කිරීම් ප්‍රමාණය"] || item.issuedQty || 0;
+            const balanceVal = item["ගබඩාවේ ඉතිරිය"] || item.balance || (totalQtyVal - issuedQtyVal);
+            const locationVal = item["නිකුත් කර ඇති ස්ථානය"] || item.location || '-';
+            const panuVal = item["පානු"] || item.panu || '-';
+            const pasuVal = item["පාසු"] || item.pasu || '-';
+
+            const row = `
+                <tr class="hover:bg-slate-800/50 transition">
+                    <td class="p-3 text-slate-400 font-mono text-xs">${index + 1}</td>
+                    <td class="p-3 font-semibold text-white">${dateVal}</td>
+                    <td class="p-3 text-gold-400 font-medium">${ledgerVal}</td>
+                    <td class="p-3 font-bold text-slate-200">${itemVal}</td>
+                    <td class="p-3 font-mono text-xs text-slate-300">${serialVal}</td>
+                    <td class="p-3 text-xs text-slate-300">${catalogVal}</td>
+                    <td class="p-3 text-xs text-slate-300">${assetVal}</td>
+                    <td class="p-3 text-center font-bold text-white">${totalQtyVal}</td>
+                    <td class="p-3 text-center font-bold text-rose-400">${issuedQtyVal}</td>
+                    <td class="p-3 text-center font-bold text-emerald-400">${balanceVal}</td>
+                    <td class="p-3 text-slate-300 text-xs">${locationVal}</td>
+                    <td class="p-3 text-slate-400 text-xs">${panuVal}</td>
+                    <td class="p-3 text-slate-400 text-xs">${pasuVal}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteRow(${index})" class="text-rose-400 hover:text-rose-300 transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Form Submit Handler
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        const btnSubmit = document.getElementById('btn-submit-form');
+        if (btnSubmit) {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> සේව් වෙමින් පවතියි...`;
+        }
+
+        const formData = {
+            date: document.getElementById('field-date').value,
+            ledger: document.getElementById('field-ledger').value,
+            item: document.getElementById('field-item').value,
+            serial: document.getElementById('field-serial').value || '-',
+            catalog: document.getElementById('field-catalog').value || '-',
+            asset: document.getElementById('field-asset').value || '-',
+            totalQty: parseFloat(document.getElementById('field-total-qty').value) || 0,
+            issuedQty: parseFloat(document.getElementById('field-issued-qty').value) || 0,
+            location: document.getElementById('field-location').value,
+            balance: parseFloat(document.getElementById('field-balance').value) || 0,
+            panu: document.getElementById('field-panu').value || '-',
+            pasu: document.getElementById('field-pasu').value || '-'
+        };
+
+        const scriptUrl = document.getElementById('sheet-webhook-url').value;
+
+        // Send data to Apps Script
+        fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(() => {
+            // Also store in local view array
+            storeData.unshift({
+                "දිනය": formData.date,
+                "ලෙජරය": formData.ledger,
+                "අයිතමය": formData.item,
+                "සීරියල් අංකය": formData.serial,
+                "නාමාවලි අංකය": formData.catalog,
+                "ස්ථාවර වත්කම් අංකය": formData.asset,
+                "ප්‍රමාණය": formData.totalQty,
+                "නිකුත් කිරීම් ප්‍රමාණය": formData.issuedQty,
+                "නිකුත් කර ඇති ස්ථානය": formData.location,
+                "ගබඩාවේ ඉතිරිය": formData.balance,
+                "පානු": formData.panu,
+                "පාසු": formData.pasu
+            });
+
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> සේව් කරන්න (Save Record)`;
+            }
+
+            showToast("සාර්ථකයි! දත්ත Google Sheet එකට Save කරන ලදී.");
+            document.getElementById('store-form').reset();
+            document.getElementById('field-date').value = new Date().toISOString().split('T')[0];
+            showSection('ledger-view');
         })
         .catch(error => {
-            console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error);
+            console.error('Error submitting form:', error);
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> සේව් කරන්න (Save Record)`;
+            }
+            showToast("දත්ත සේව් කිරීමේදී දෝෂයක් සිදු විය!", true);
         });
-});
-  function displayDataOnScreen(items) {
-      const tableBody = document.getElementById('ledger-table-body');
-      if (!tableBody) return;
-      
-      tableBody.innerHTML = '';
-      items.forEach(item => {
-          let row = `<tr>
-              <td>${item.date}</td>
-              <td>${item.description}</td>
-              <td>${item.revenue}</td>
-          </tr>`;
-          tableBody.innerHTML += row;
-      });
-  }
-    </script>
+    }
+
+    // Save Webhook URL Configuration
+    function saveWebhookUrl() {
+        const url = document.getElementById('sheet-webhook-url').value;
+        if (url) {
+            showToast("Google Sheet Webhook URL එක සාර්ථකව සම්බන්ධ විය!");
+            fetchLiveData(url);
+        }
+    }
+
+    // Toast Notification Display
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast-message');
+        const toastText = document.getElementById('toast-text');
+        if (toast && toastText) {
+            toastText.innerHTML = isError ? 
+                `<i class="fa-solid fa-triangle-exclamation mr-2"></i> ${message}` : 
+                `<i class="fa-solid fa-circle-check mr-2"></i> ${message}`;
+            
+            toast.className = isError ? 
+                "mb-6 p-4 rounded-lg bg-rose-800 border border-rose-500 text-white flex justify-between items-center shadow-lg" : 
+                "mb-6 p-4 rounded-lg bg-emerald-800 border border-emerald-500 text-white flex justify-between items-center shadow-lg";
+
+            toast.classList.remove('hidden');
+            setTimeout(() => hideToast(), 4000);
+        }
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toast-message');
+        if (toast) toast.classList.add('hidden');
+    }
+
+    // Local delete fallback
+    function deleteRow(index) {
+        if (confirm("මෙම දත්ත සටහන ඉවත් කිරීමට අවශ්‍යද?")) {
+            storeData.splice(index, 1);
+            renderTable();
+            showToast("සටහන ඉවත් කරන ලදී.");
+        }
+    }
+
+    // Export Table to CSV
+    function exportCSV() {
+        if (storeData.length === 0) {
+            alert("Export කිරීමට දත්ත නොමැත.");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+        csvContent += "දිනය,ලෙජරය,අයිතමය,සීරියල් අංකය,නාමාවලි අංකය,ස්ථාවර වත්කම් අංකය,මුළු ප්‍රමාණය,නිකුත් ප්‍රමාණය,නිකුත් කළ ස්ථානය,ගබඩාවේ ඉතිරිය,පානු,පාසු\n";
+
+        storeData.forEach(item => {
+            let row = [
+                `"${item["දිනය"] || item.date || ''}"`,
+                `"${item["ලෙජරය"] || item.ledger || ''}"`,
+                `"${item["අයිතමය"] || item.item || ''}"`,
+                `"${item["සීරියල් අංකය"] || item.serial || ''}"`,
+                `"${item["නාමාවලි අංකය"] || item.catalog || ''}"`,
+                `"${item["ස්ථාවර වත්කම් අංකය"] || item.asset || ''}"`,
+                `"${item["ප්‍රමාණය"] || item.totalQty || 0}"`,
+                `"${item["නිකුත් කිරීම් ප්‍රමාණය"] || item.issuedQty || 0}"`,
+                `"${item["නිකුත් කර ඇති ස්ථානය"] || item.location || ''}"`,
+                `"${item["ගබඩාවේ ඉතිරිය"] || item.balance || 0}"`,
+                `"${item["පානු"] || item.panu || ''}"`,
+                `"${item["පාසු"] || item.pasu || ''}"`
+            ];
+            csvContent += row.join(",") + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Gajaba_Store_Ledger_Data_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
 </body>
 </html>
