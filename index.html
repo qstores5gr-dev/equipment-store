@@ -1,813 +1,731 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & Noto Sans Sinhala -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            800: '#112240',
-                            900: '#1B365D',
-                            950: '#0F1E36',
-                        },
-                        gold: {
-                            400: '#FACC15',
-                            500: '#D4AF37',
-                            600: '#CA8A04',
-                        }
-                    },
-                    fontFamily: {
-                        sinhala: ['Noto Sans Sinhala', 'Inter', 'sans-serif'],
-                    }
-                }
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f1e36" />
+  <title>උපකරණ ගබඩාව - 5 | Inventory Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 800: '#112240', 900: '#1B365D', 950: '#0F1E36' },
+            gold: { 400: '#FACC15', 500: '#D4AF37', 600: '#CA8A04' }
+          },
+          fontFamily: { sinhala: ['Noto Sans Sinhala', 'Inter', 'sans-serif'] }
         }
-    </script>
-    <style>
-        body {
-            font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
-        .gold-border {
-            border-color: #D4AF37;
-        }
-        .btn-gold {
-            background: linear-gradient(135deg, #EAB308 0%, #D4AF37 100%);
-            color: #0f172a;
-            font-weight: bold;
-        }
-        .btn-gold:hover {
-            background: linear-gradient(135deg, #CA8A04 0%, #B49129 100%);
-        }
-        .btn-navy {
-            background: linear-gradient(135deg, #1B365D 0%, #112240 100%);
-            border: 2px solid #D4AF37;
-            color: #FFFFFF;
-        }
-        .btn-navy:hover {
-            background: linear-gradient(135deg, #244677 0%, #1B365D 100%);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #D4AF37;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between">
-
-    <!-- Header Section -->
-    <header class="bg-navy-900 border-b-4 border-gold-500 shadow-xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-4 space-x-reverse">
-                <div class="w-14 h-14 rounded-full bg-gold-500 flex items-center justify-center border-2 border-white shadow-lg text-navy-950 font-bold text-2xl">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-gold-400 tracking-wide">
-                        උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව
-                    </h1>
-                    <p class="text-xs sm:text-sm text-slate-300">
-                        භාණ්ඩ සහ ලෙජර් කළමනාකරණ පරිගණක පද්ධතිය (Inventory Store Management)
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Quick Navigation Controls -->
-            <div class="flex items-center gap-2">
-                <button onclick="showSection('dashboard')" class="px-3 py-2 rounded-lg bg-slate-800 text-gold-400 border border-gold-500/50 hover:bg-slate-700 transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-house"></i> ප්‍රධාන මෙනුව
-                </button>
-                <button onclick="showSection('ledger-view')" class="px-3 py-2 rounded-lg bg-slate-800 text-gold-400 border border-gold-500/50 hover:bg-slate-700 transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-list-check"></i> ලෙජර් දත්ත
-                </button>
-                <button onclick="showSection('sheet-config')" class="px-3 py-2 rounded-lg bg-gold-500 text-navy-950 font-semibold hover:bg-gold-400 transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-file-excel"></i> Google Sheet සැකසුම්
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-
-        <!-- Notification Banner -->
-        <div id="toast-message" class="hidden mb-6 p-4 rounded-lg bg-emerald-800 border border-emerald-500 text-white flex justify-between items-center shadow-lg">
-            <span id="toast-text"><i class="fa-solid fa-circle-check mr-2"></i> සාර්ථකයි! දත්ත ඇතුළත් කරන ලදී.</span>
-            <button onclick="hideToast()" class="text-white hover:text-slate-200"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <!-- 1. DASHBOARD / MAIN MENU SECTION -->
-        <section id="section-dashboard" class="space-y-8">
-            <div class="text-center space-y-2">
-                <h2 class="text-2xl sm:text-3xl font-bold text-white">ප්‍රධාන ලෙජර් තේරීම</h2>
-                <p class="text-slate-400 text-sm sm:text-base">දත්ත ඇතුළත් කිරීමට හෝ පරික්ෂා කිරීමට අවශ්‍ය ලෙජරය පහතින් තෝරන්න</p>
-            </div>
-
-            <!-- 9 Main Ledger Buttons Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- 1. බැරැක්ක භාණ්ඩ ලෙජරය -->
-                <button onclick="openLedgerForm('බැරැක්ක භාණ්ඩ ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-bed"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">බැරැක්ක භාණ්ඩ ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Barrack Stores Ledger</span>
-                </button>
-
-                <!-- 2. පාලන උපකරණ ලෙජරය -->
-                <button onclick="openLedgerForm('පාලන උපකරණ ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-clipboard-check"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">පාලන උපකරණ ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Quartermaster / Admin Equipment</span>
-                </button>
-
-                <!-- 3. උපකරණ ලෙජරය -->
-                <button onclick="openLedgerForm('උපකරණ ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-boxes-packing"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">උපකරණ ලෙජරය</span>
-                    <span class="text-xs text-slate-300">General Equipment Ledger</span>
-                </button>
-
-                <!-- 4. සංඥා ලෙජරය -->
-                <button onclick="openLedgerForm('සංඥා ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-walkie-talkie"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">සංඥා ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Signal Equipment Ledger</span>
-                </button>
-
-                <!-- 5. ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය -->
-                <button onclick="openLedgerForm('ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-volleyball"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">ක්‍රීඩා භාණ්ඩ සහ සුභසාධක</span>
-                    <span class="text-xs text-slate-300">Sports & Welfare Ledger</span>
-                </button>
-
-                <!-- 6. යාන්ත්‍රික ප්‍රවාහන ලෙජරය -->
-                <button onclick="openLedgerForm('යාන්ත්‍රික ප්‍රවාහන ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-truck-monster"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">යාන්ත්‍රික ප්‍රවාහන ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Mechanical Transport (MT) Ledger</span>
-                </button>
-
-                <!-- 7. සිතියම් ලෙජරය -->
-                <button onclick="openLedgerForm('සිතියම් ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">සිතියම් ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Maps & Cartography Ledger</span>
-                </button>
-
-                <!-- 8. පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය -->
-                <button onclick="openLedgerForm('පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-broom"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Cleaning & Expendables Ledger</span>
-                </button>
-
-                <!-- 9. ඒකක දේපල ලෙජරය -->
-                <button onclick="openLedgerForm('ඒකක දේපල ලෙජරය')" class="btn-navy p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-building-shield"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gold-400 group-hover:text-white mb-2">ඒකක දේපල ලෙජරය</span>
-                    <span class="text-xs text-slate-300">Unit Property Ledger</span>
-                </button>
-
-            </div>
-        </section>
-
-        <!-- 2. DATA ENTRY FORM SECTION -->
-        <section id="section-form" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative">
-            
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-800 pb-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-gold-400 flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square"></i> <span id="form-title-text">දත්ත ඇතුළත් කිරීමේ පෝරමය</span>
-                    </h2>
-                    <p class="text-xs text-slate-400 mt-1">තෝරාගත් ලෙජරයට අදාළ නිකුත් කිරීම් සහ තොරතුරු සටහන් කරන්න</p>
-                </div>
-                <button onclick="showSection('dashboard')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm border border-slate-700 flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i> ආපසු මෙනුවට
-                </button>
-            </div>
-
-            <form id="store-form" onsubmit="handleFormSubmit(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- 1. දිනය (Date) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days text-gold-400"></i> දිනය (Date) *
-                    </label>
-                    <input type="date" id="field-date" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 2. ලෙජරය (Ledger Dropdown) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-book text-gold-400"></i> ලෙජරය (Ledger) *
-                    </label>
-                    <select id="field-ledger" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                        <option value="බැරැක්ක භාණ්ඩ ලෙජරය">බැරැක්ක භාණ්ඩ ලෙජරය</option>
-                        <option value="පාලන උපකරණ ලෙජරය">පාලන උපකරණ ලෙජරය</option>
-                        <option value="උපකරණ ලෙජරය">උපකරණ ලෙජරය</option>
-                        <option value="සංඥා ලෙජරය">සංඥා ලෙජරය</option>
-                        <option value="ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය">ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය</option>
-                        <option value="යාන්ත්‍රික ප්‍රවාහන ලෙජරය">යාන්ත්‍රික ප්‍රවාහන ලෙජරය</option>
-                        <option value="සිතියම් ලෙජරය">සිතියම් ලෙජරය</option>
-                        <option value="පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය">පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය</option>
-                        <option value="ඒකක දේපල ලෙජරය">ඒකක දේපල ලෙජරය</option>
-                    </select>
-                </div>
-
-                <!-- 3. අයිතමය (Item Name) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-box text-gold-400"></i> අයිතමය (Item Name) *
-                    </label>
-                    <input type="text" id="field-item" list="item-suggestions" required placeholder="උදා: ඇඳ ඇතිරිලි සුදු / පුටු ප්ලාස්ටික්" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                    <datalist id="item-suggestions">
-                        <option value="ඇඳ ඇතිරිලි සුදු"></option>
-                        <option value="කොට්ට උර"></option>
-                        <option value="මෙට්ට 3''"></option>
-                        <option value="පුටු ප්ලාස්ටික්"></option>
-                        <option value="මේස ලී"></option>
-                        <option value="විදුලි බුබුළු 12W"></option>
-                        <option value="හැඳි පැතලි"></option>
-                    </datalist>
-                </div>
-
-                <!-- 4. සීරියල් අංකය (Serial No) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-barcode text-gold-400"></i> සීරියල් අංකය (Serial No)
-                    </label>
-                    <input type="text" id="field-serial" placeholder="-නැත-" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 5. නාමාවලි අංකය (Catalog No) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-list-ol text-gold-400"></i> නාමාවලි අංකය (Catalog No)
-                    </label>
-                    <input type="text" id="field-catalog" placeholder="උදා: CAT/2026/01" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 6. ස්ථාවර වත්කම් අංකය (Fixed Asset No) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-hashtag text-gold-400"></i> ස්ථාවර වත්කම් අංකය (Asset No)
-                    </label>
-                    <input type="text" id="field-asset" placeholder="උදා: FA/GR/502" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 7. ප්‍රමාණය (Total Quantity) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-gold-400"></i> මුළු ප්‍රමාණය (Total Qty) *
-                    </label>
-                    <input type="number" id="field-total-qty" min="0" value="1" required oninput="calculateBalance()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 8. නිකුත් කිරීම් ප්‍රමාණය (Issued Qty) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-right-from-bracket text-gold-400"></i> නිකුත් කිරීම් ප්‍රමාණය (Issued Qty) *
-                    </label>
-                    <input type="number" id="field-issued-qty" min="0" value="0" required oninput="calculateBalance()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 9. නිකුත් කර ඇති ස්ථානය (Issued Location / Person) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot text-gold-400"></i> නිකුත් කර ඇති ස්ථානය / නිලධාරියා *
-                    </label>
-                    <input type="text" id="field-location" required placeholder="උදා: A බෝට්ටු නිවස / CO කාර්යාලය" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 10. ගබඩාවේ ඉතිරිය (Remaining Store Balance - Calculated) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-scale-balanced text-gold-400"></i> ගබඩාවේ ඉතිරිය (Store Balance)
-                    </label>
-                    <input type="number" id="field-balance" readonly class="w-full bg-slate-950 border border-gold-500/50 text-gold-400 font-bold rounded-lg px-4 py-2.5 focus:outline-none cursor-not-allowed">
-                </div>
-
-                <!-- 11. පානු (PA/NU) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-file-signature text-gold-400"></i> පානු (PA / NU)
-                    </label>
-                    <input type="text" id="field-panu" placeholder="ලැබීම්/නිකුත් කිරීම් යොමු අංකය" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- 12. පාසු (PA/SU) -->
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-file-contract text-gold-400"></i> පාසු (PA / SU)
-                    </label>
-                    <input type="text" id="field-pasu" placeholder="අතිරේක යොමු අංකය" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500">
-                </div>
-
-                <!-- Submit Button Bar -->
-                <div class="md:col-span-2 lg:col-span-3 flex justify-end gap-4 pt-4 border-t border-slate-800">
-                    <button type="button" onclick="showSection('dashboard')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-lg transition">
-                        අවලංගු කරන්න
-                    </button>
-                    <button type="submit" id="btn-submit-form" class="px-8 py-3 btn-gold font-bold rounded-lg shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> සේව් කරන්න (Save Record)
-                    </button>
-                </div>
-
-            </form>
-        </section>
-
-        <!-- 3. LEDGER DATA VIEW SECTION -->
-        <section id="section-ledger-view" class="hidden space-y-6">
-            
-            <!-- Controls and Filters -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="w-full md:w-auto">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-database text-gold-400"></i> සටහන් වූ ලෙජර් දත්ත පද්ධතිය
-                    </h2>
-                    <p class="text-xs text-slate-400">සියලුම ලෙජර්වල ඇතුළත් කළ දත්ත පහතින් පරීක්ෂා කළ හැක</p>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    <!-- Filter By Ledger -->
-                    <select id="view-filter-ledger" onchange="renderTable()" class="bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500">
-                        <option value="ALL">සියලුම ලෙජර් (All Ledgers)</option>
-                        <option value="බැරැක්ක භාණ්ඩ ලෙජරය">බැරැක්ක භාණ්ඩ ලෙජරය</option>
-                        <option value="පාලන උපකරණ ලෙජරය">පාලන උපකරණ ලෙජරය</option>
-                        <option value="උපකරණ ලෙජරය">උපකරණ ලෙජරය</option>
-                        <option value="සංඥා ලෙජරය">සංඥා ලෙජරය</option>
-                        <option value="ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය">ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය</option>
-                        <option value="යාන්ත්‍රික ප්‍රවාහන ලෙජරය">යාන්ත්‍රික ප්‍රවාහන ලෙජරය</option>
-                        <option value="සිතියම් ලෙජරය">සිතියම් ලෙජරය</option>
-                        <option value="පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය">පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය</option>
-                        <option value="ඒකක දේපල ලෙජරය">ඒකක දේපල ලෙජරය</option>
-                    </select>
-
-                    <!-- Search Input -->
-                    <input type="text" id="view-search-input" onkeyup="renderTable()" placeholder="අයිතමය / ස්ථානය සොයන්න..." class="bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500">
-
-                    <!-- Export Actions -->
-                    <button onclick="exportCSV()" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-sm flex items-center gap-1 shadow">
-                        <i class="fa-solid fa-file-csv"></i> Export CSV
-                    </button>
-                    <button onclick="window.print()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm flex items-center gap-1 shadow">
-                        <i class="fa-solid fa-print"></i> මුද්‍රණය
-                    </button>
-                </div>
-            </div>
-
-            <!-- Data Table -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="bg-navy-900 text-gold-400 text-xs uppercase border-b border-slate-800">
-                            <tr>
-                                <th class="p-3">#</th>
-                                <th class="p-3">දිනය</th>
-                                <th class="p-3">ලෙජරය</th>
-                                <th class="p-3">අයිතමය</th>
-                                <th class="p-3">සීරියල් අංකය</th>
-                                <th class="p-3">නාමාවලි අංකය</th>
-                                <th class="p-3">වත්කම් අංකය</th>
-                                <th class="p-3 text-center">මුළු ප්‍රමාණය</th>
-                                <th class="p-3 text-center">නිකුත් ප්‍රමාණය</th>
-                                <th class="p-3 text-center">ඉතිරිය</th>
-                                <th class="p-3">නිකුත් කළ ස්ථානය</th>
-                                <th class="p-3">පානු</th>
-                                <th class="p-3">පාසු</th>
-                                <th class="p-3 text-center">ක්‍රියාමාර්ග</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ledger-table-body" class="divide-y divide-slate-800">
-                            <!-- Rows dynamic -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="table-empty-msg" class="p-8 text-center text-slate-500 hidden">
-                    <i class="fa-solid fa-inbox text-4xl mb-2"></i>
-                    <p>දැනට ඇතුළත් කළ දත්ත කිසිවක් නොමැත.</p>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- 4. GOOGLE SHEETS SETUP CONFIGURATION SECTION -->
-        <section id="section-sheet-config" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
-            <div class="border-b border-slate-800 pb-4">
-                <h2 class="text-2xl font-bold text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-file-excel"></i> Google Sheets සෘජු සම්බන්ධතාවය (Integration)
-                </h2>
-                <p class="text-sm text-slate-400 mt-1">මෙම වෙබ් අඩවිය හරහා ඇතුළත් කරන සියලුම දත්ත ඔබේ Google Sheet එකේ අදාළ Tab 9 ට ස්වයංක්‍රීයව Save වීමට පහත සැකසුම් සකසන්න.</p>
-            </div>
-
-            <div class="space-y-4">
-                <label class="block text-sm font-semibold text-slate-300">Google Apps Script Webhook URL:</label>
-                <div class="flex gap-2">
-                    <input type="url" id="sheet-webhook-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-gold-500 text-sm">
-                    <button onclick="saveWebhookUrl()" class="btn-gold px-6 py-2.5 rounded-lg font-bold text-sm">
-                        සම්බන්ධ කරන්න (Save URL)
-                    </button>
-                </div>
-                <p class="text-xs text-emerald-400" id="webhook-status-text"></p>
-            </div>
-
-            <!-- Apps Script Setup Instructions Modal / Panel -->
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 space-y-4 text-xs sm:text-sm text-slate-300">
-                <h3 class="font-bold text-gold-400 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-gears"></i> Google Sheet එක සකස් කරගන්නා ආකාරය (පියවරෙන් පියවර):
-                </h3>
-                <ol class="list-decimal list-inside space-y-2 leading-relaxed">
-                    <li>අලුත් **Google Sheet** එකක් සාදා එහි නම **"උපකරණ ගබඩාව - 5 ගජබා"** ලෙස යොදන්න.</li>
-                    <li>එහි පහළින් Tabs (පිටු) 9 ක් සාදා පහත නිවැරදි නම් ලබා දෙන්න:
-                        <span class="block my-1 font-mono text-gold-400 bg-slate-900 p-2 rounded">බැරැක්ක භාණ්ඩ ලෙජරය, පාලන උපකරණ ලෙජරය, උපකරණ ලෙජරය, සංඥා ලෙජරය, ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය, යාන්ත්‍රික ප්‍රවාහන ලෙජරය, සිතියම් ලෙජරය, පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය, ඒකක දේපල ලෙජරය</span>
-                    </li>
-                    <li>සෑම Sheet එකකම 1 වන පේළියේ (Headers) මෙම මාතෘකා 12 ලියන්න:
-                        <span class="block my-1 font-mono text-xs text-slate-200 bg-slate-900 p-2 rounded">දිනය | ලෙජරය | අයිතමය | සීරියල් අංකය | නාමාවලි අංකය | ස්ථාවර වත්කම් අංකය | ප්‍රමාණය | නිකුත් කිරීම් ප්‍රමාණය | නිකුත් කර ඇති ස්ථානය | ගබඩාවේ ඉතිරිය | පානු | පාසු</span>
-                    </li>
-                    <li>Google Sheet හි **Extensions > Apps Script** වෙත ගොස් එහි ඇති Code එක ඉවත් කර පහත සූත්‍රය Copy-Paste කරන්න:</li>
-                </ol>
-
-                <div class="relative">
-                    <pre class="bg-slate-900 border border-slate-800 text-gold-400 p-4 rounded-lg font-mono text-xs overflow-x-auto leading-normal">
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(data.ledger);
-    if (!sheet) {
-      sheet = ss.insertSheet(data.ledger);
-      sheet.appendRow(["දිනය","ලෙජරය","අයිතමය","සීරියල් අංකය","නාමාවලි අංකය","ස්ථාවර වත්කම් අංකය","ප්‍රමාණය","නිකුත් කිරීම් ප්‍රමාණය","නිකුත් කර ඇති ස්ථානය","ගබඩාවේ ඉතිරිය","පානු","පාසු"]);
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Noto Sans Sinhala', Inter, sans-serif; background: #0b1425; color: #f8fafc; }
+    .glass { background: rgba(17, 34, 64, .88); border: 1px solid rgba(212,175,55,.2); backdrop-filter: blur(12px); }
+    .gold-gradient { background: linear-gradient(135deg,#facc15,#d4af37); color: #0f1e36; }
+    .nav-btn { border: 1px solid transparent; transition: .2s; }
+    .nav-btn.active, .nav-btn:hover { background: rgba(212,175,55,.12); border-color: rgba(212,175,55,.45); color: #facc15; }
+    .ledger-card { background: linear-gradient(145deg,#1b365d,#112240); border: 1px solid rgba(212,175,55,.45); transition: transform .2s, box-shadow .2s; }
+    .ledger-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+    .field { width: 100%; background: #0b1425; border: 1px solid #334155; border-radius: .75rem; padding: .75rem .9rem; color: #f8fafc; outline: none; }
+    .field:focus { border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212,175,55,.12); }
+    .field:disabled, .field[readonly] { opacity: .85; }
+    .field-label { display:block; color:#cbd5e1; font-size:.875rem; font-weight:600; margin-bottom:.45rem; }
+    .stat-card { background: linear-gradient(145deg,rgba(27,54,93,.95),rgba(15,30,54,.98)); border:1px solid rgba(212,175,55,.18); }
+    .table-wrap { overflow-x:auto; }
+    .data-table { width:100%; min-width:1120px; border-collapse:separate; border-spacing:0; }
+    .data-table th { position:sticky; top:0; background:#1b365d; color:#facc15; font-size:.75rem; white-space:nowrap; text-align:left; padding:.85rem .75rem; }
+    .data-table td { padding:.75rem; border-bottom:1px solid rgba(148,163,184,.12); font-size:.82rem; vertical-align:middle; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,.035); }
+    .icon-action { width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:.6rem;transition:.2s; }
+    .icon-action.edit { color:#facc15;background:rgba(250,204,21,.1); }
+    .icon-action.delete { color:#fb7185;background:rgba(244,63,94,.1); }
+    .icon-action:hover { filter:brightness(1.25); transform:translateY(-1px); }
+    .toast { position:fixed; right:1rem; bottom:1rem; z-index:100; max-width:min(92vw,480px); box-shadow:0 12px 40px rgba(0,0,0,.4); }
+    .hidden-section { display:none !important; }
+    ::-webkit-scrollbar { width:9px;height:9px; }
+    ::-webkit-scrollbar-track { background:#0f1e36; }
+    ::-webkit-scrollbar-thumb { background:#9a7b24;border-radius:9px; }
+    @media print {
+      body { background:white !important;color:black !important; }
+      header, footer, .no-print, #toast { display:none !important; }
+      main { max-width:none !important;padding:0 !important; }
+      .data-table { min-width:0; }
+      .data-table th,.data-table td { color:black !important;background:white !important;border:1px solid #bbb !important;font-size:9px; }
+      #section-ledger-view { display:block !important; }
     }
-    sheet.appendRow([
-      data.date, data.ledger, data.item, data.serial, data.catalog,
-      data.asset, data.totalQty, data.issuedQty, data.location,
-      data.balance, data.panu, data.pasu
-    ]);
-    return ContentService.createTextOutput(JSON.stringify({result: "success"})).setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({result: "error", error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-                    </pre>
-                </div>
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <header class="sticky top-0 z-40 border-b-2 border-gold-500/70 bg-navy-900/95 backdrop-blur shadow-2xl">
+    <div class="max-w-[1500px] mx-auto px-4 sm:px-6 py-3 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="h-12 w-12 rounded-full gold-gradient flex items-center justify-center text-2xl shadow-lg"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-gold-400">උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව</h1>
+          <p class="text-xs text-slate-300">භාණ්ඩ සහ ලෙජර් කළමනාකරණ පද්ධතිය · Inventory Store Management</p>
+        </div>
+      </div>
+      <nav class="flex flex-wrap gap-2 no-print" aria-label="ප්‍රධාන මෙනුව">
+        <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200 active" data-nav="dashboard" onclick="switchSection('dashboard')"><i class="fa-solid fa-house mr-2"></i>ප්‍රධාන මෙනුව</button>
+        <button id="nav-entry" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="form" onclick="openNewRecord()"><i class="fa-solid fa-circle-plus mr-2"></i>දත්ත ඇතුළත් කිරීම</button>
+        <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="ledger-view" onclick="switchSection('ledger-view')"><i class="fa-solid fa-table-list mr-2"></i>ලෙජර් දත්ත</button>
+        <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="settings" onclick="switchSection('settings')"><i class="fa-solid fa-gear mr-2"></i>සැකසුම්</button>
+      </nav>
+    </div>
+  </header>
 
-                <ol start="5" class="list-decimal list-inside space-y-2 leading-relaxed">
-                    <li>Apps Script හි **Deploy > New Deployment** තෝරා **Select type > Web App** ලබා දෙන්න.</li>
-                    <li>**Who has access** කියන තැනට **"Anyone"** ලබා දී Deploy කර එහි ලැබෙන Webhook URL එක Copy කර ඉහත කොටුවට ලබා දෙන්න.</li>
-                </ol>
-            </div>
-        </section>
+  <main class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1">
+    <div id="connection-strip" class="hidden mb-5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100 no-print">
+      <i class="fa-solid fa-circle-info mr-2"></i><span id="connection-message">Google Sheets සම්බන්ධතාවය සකස් කරන්න.</span>
+    </div>
 
-    </main>
+    <!-- Dashboard -->
+    <section id="section-dashboard" class="space-y-7">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+        <div>
+          <p class="text-gold-400 text-sm font-semibold tracking-wide">STORE OVERVIEW</p>
+          <h2 class="text-2xl sm:text-3xl font-extrabold mt-1">ප්‍රධාන පාලන පුවරුව</h2>
+          <p class="text-slate-400 text-sm mt-2">ගබඩා දත්තවල වත්මන් සාරාංශය සහ ලෙජර් තේරීම.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-400">
+          <span id="role-pill" class="rounded-full px-3 py-1 bg-slate-800 border border-slate-700">සම්බන්ධ වී නැත</span>
+          <span id="last-sync">දත්ත තවම ලබාගෙන නැත</span>
+        </div>
+      </div>
 
-    <footer class="bg-navy-950 border-t border-slate-800 py-4 text-center text-xs text-slate-400">
-        <p>© 2026 උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව | සියලුම හිමිකම් ඇවිරිණි.</p>
-    </footer>
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div class="stat-card rounded-2xl p-4 sm:p-5">
+          <div class="flex justify-between items-center text-slate-300 text-xs sm:text-sm"><span>මුළු දත්ත සටහන්</span><i class="fa-solid fa-database text-gold-400 text-lg"></i></div>
+          <p id="stat-records" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">—</p>
+          <p class="text-xs text-slate-400 mt-1">සියලුම ලෙජර් එකතුව</p>
+        </div>
+        <div class="stat-card rounded-2xl p-4 sm:p-5">
+          <div class="flex justify-between items-center text-slate-300 text-xs sm:text-sm"><span>ලෙජර් වර්ග</span><i class="fa-solid fa-book-open text-gold-400 text-lg"></i></div>
+          <p id="stat-ledgers" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">9</p>
+          <p class="text-xs text-slate-400 mt-1">පද්ධතියේ ලෙජර්</p>
+        </div>
+        <div class="stat-card rounded-2xl p-4 sm:p-5">
+          <div class="flex justify-between items-center text-slate-300 text-xs sm:text-sm"><span>අද ඇතුළත් කළ සටහන්</span><i class="fa-solid fa-calendar-check text-gold-400 text-lg"></i></div>
+          <p id="stat-today" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">—</p>
+          <p class="text-xs text-slate-400 mt-1">අද දිනය අනුව</p>
+        </div>
+        <div class="stat-card rounded-2xl p-4 sm:p-5">
+          <div class="flex justify-between items-center text-slate-300 text-xs sm:text-sm"><span>වෙනස් භාණ්ඩ වර්ග</span><i class="fa-solid fa-boxes-stacked text-gold-400 text-lg"></i></div>
+          <p id="stat-items" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">—</p>
+          <p class="text-xs text-slate-400 mt-1">හඳුනාගත් භාණ්ඩ කාණ්ඩ</p>
+        </div>
+      </div>
 
-    <!-- Complete Integrated Dynamic JavaScript -->
-    <script>
-        // Local Data Storage array
-        let storeData = [];
+      <div class="flex items-center justify-between gap-3">
+        <div><h3 class="text-xl font-bold">ලෙජර් තේරීම</h3><p class="text-xs text-slate-400 mt-1">අදාළ ලෙජරය තෝරා එහි දත්ත බලන්න.</p></div>
+        <button onclick="refreshData()" class="no-print rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3 py-2 text-sm"><i class="fa-solid fa-rotate mr-2"></i>යාවත්කාලීන</button>
+      </div>
+      <div id="ledger-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
-        // Local Storage setup & Webhook URL loading
-        document.addEventListener("DOMContentLoaded", function () {
-            // Set today's date in form
-            const dateInput = document.getElementById('field-date');
-            if (dateInput) {
-                dateInput.value = new Date().toISOString().split('T')[0];
-            }
+      <div class="glass rounded-2xl p-4 sm:p-5">
+        <div class="flex items-center justify-between mb-4"><div><h3 class="font-bold text-lg">අලුතින් ඇතුළත් කළ දත්ත</h3><p class="text-xs text-slate-400 mt-1">අලුත්ම සටහන් 5</p></div><button onclick="switchSection('ledger-view')" class="text-xs text-gold-400 hover:text-yellow-300">සියලුම දත්ත <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
+        <div id="recent-records" class="space-y-2"><p class="text-sm text-slate-500">දත්ත ලබාගැනීමට සම්බන්ධ වන්න.</p></div>
+      </div>
+      <div class="flex flex-wrap gap-3 no-print">
+        <button id="dashboard-add-btn" onclick="openNewRecord()" class="gold-gradient rounded-xl px-5 py-3 font-bold shadow-lg"><i class="fa-solid fa-plus mr-2"></i>නව දත්ත ඇතුළත් කරන්න</button>
+        <button onclick="switchSection('ledger-view')" class="rounded-xl px-5 py-3 border border-gold-500/50 text-gold-300 hover:bg-gold-500/10"><i class="fa-solid fa-magnifying-glass mr-2"></i>දත්ත සොයන්න</button>
+      </div>
+    </section>
 
-            // Web App URL setup
-            const scriptUrl = "https://script.google.com/macros/s/AKfycbyM3LkhoZzNuLFZbaYSH9yt8RNnEI-OhgNayQazSwfAeGs0i6gRV24tsNc1bAyCCtHeGg/exec";
-            const webhookInput = document.getElementById('sheet-webhook-url');
-            if (webhookInput) {
-                webhookInput.value = scriptUrl;
-            }
+    <!-- Data entry / Edit form -->
+    <section id="section-form" class="hidden-section">
+      <div class="glass rounded-2xl p-5 sm:p-8 shadow-2xl">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-700 pb-5 mb-6">
+          <div><p class="text-gold-400 text-xs font-semibold">RECORD MANAGEMENT</p><h2 id="form-title" class="text-2xl font-extrabold mt-1">දත්ත ඇතුළත් කිරීම</h2><p class="text-xs text-slate-400 mt-2">එකම ලෙජරයේ එකම හඳුනාගැනීමක් ඇති භාණ්ඩවල ප්‍රමාණ ස්වයංක්‍රීයව එකතු වේ.</p></div>
+          <button onclick="switchSection('dashboard')" class="rounded-lg bg-slate-800 hover:bg-slate-700 px-4 py-2 text-sm"><i class="fa-solid fa-arrow-left mr-2"></i>ආපසු</button>
+        </div>
 
-            // Fetch Live Data from Google Apps Script
-            fetchLiveData(scriptUrl);
+        <form id="store-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div><label class="field-label" for="field-date">දිනය *</label><input class="field" type="date" id="field-date" required /></div>
+          <div><label class="field-label" for="field-ledger">ලෙජරය *</label><select class="field" id="field-ledger" required></select></div>
+          <div><label class="field-label" for="field-item">අයිතමය *</label><input class="field" type="text" id="field-item" list="item-suggestions" placeholder="උදා: ඇඳන්" required /><datalist id="item-suggestions"><option value="ඇඳන්"></option><option value="ඇඳ ඇතිරිලි සුදු"></option><option value="කොට්ට උර"></option><option value="පුටු ප්ලාස්ටික්"></option><option value="මේස ලී"></option></datalist></div>
+          <div><label class="field-label" for="field-serial">සීරියල් අංකය</label><input class="field" type="text" id="field-serial" placeholder="-නැත-" /></div>
+          <div><label class="field-label" for="field-catalog">නාමාවලි අංකය</label><input class="field" type="text" id="field-catalog" placeholder="CAT/2026/01" /></div>
+          <div><label class="field-label" for="field-asset">ස්ථාවර වත්කම් අංකය</label><input class="field" type="text" id="field-asset" placeholder="FA/GR/502" /></div>
+          <div><label class="field-label" for="field-issued-qty">නිකුත් කිරීම් / ඇතුළත් කිරීම් ප්‍රමාණය *</label><input class="field" type="number" id="field-issued-qty" min="0" step="any" value="0" required /></div>
+          <div><label class="field-label" for="field-location">නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය *</label><input class="field" type="text" id="field-location" list="location-suggestions" placeholder="උදා: ජන අවන්හල / උපකරණ ගබඩාව" required /><datalist id="location-suggestions"><option value="ජන අවන්හල"></option><option value="බැරැක්කය"></option><option value="උපකරණ ගබඩාව"></option></datalist></div>
+          <div><label class="field-label" for="field-total-qty">මුළු ප්‍රමාණය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-total-qty" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">එකම භාණ්ඩ කාණ්ඩයේ සියලුම ඇතුළත් කිරීම්වල එකතුව.</p></div>
+          <div><label class="field-label" for="field-balance">ගබඩාවේ ඉතිරිය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-balance" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">“උපකරණ ගබඩාව” ස්ථානයට ඇතුළත් කළ ප්‍රමාණවල එකතුව.</p></div>
+          <div><label class="field-label" for="field-panu">පානු (PA / NU)</label><input class="field" type="text" id="field-panu" placeholder="ලැබීම් / නිකුත් කිරීම් යොමු අංකය" /></div>
+          <div><label class="field-label" for="field-pasu">පාසු (PA / SU)</label><input class="field" type="text" id="field-pasu" placeholder="අතිරේක යොමු අංකය" /></div>
+
+          <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-gold-500/20 bg-gold-500/5 p-4 text-xs text-slate-300 leading-6">
+            <i class="fa-solid fa-circle-info text-gold-400 mr-2"></i>
+            <b class="text-gold-300">ගණනය වන ආකාරය:</b> මුළු ප්‍රමාණය = එකම ලෙජරයේ එකම අයිතමයේ (Serial / Catalog / Asset අංකද ගැළපෙන) සියලුම නිකුත් කිරීම් ප්‍රමාණ එකතුව. ගබඩාවේ ඉතිරිය = ස්ථානය “උපකරණ ගබඩාව” ලෙස ඇති සටහන්වල ප්‍රමාණ එකතුව. Edit/Delete කළ විටත් Server එකෙන් නැවත ගණනය කෙරේ.
+          </div>
+          <div class="md:col-span-2 xl:col-span-3 flex flex-col sm:flex-row justify-end gap-3 border-t border-slate-700 pt-5">
+            <button type="button" onclick="switchSection('ledger-view')" class="rounded-xl bg-slate-800 hover:bg-slate-700 px-5 py-3">අවලංගු කරන්න</button>
+            <button id="btn-save" type="submit" class="gold-gradient rounded-xl px-7 py-3 font-bold shadow-lg"><i class="fa-solid fa-floppy-disk mr-2"></i>සේව් කරන්න</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Ledger data -->
+    <section id="section-ledger-view" class="hidden-section space-y-5">
+      <div class="glass rounded-2xl p-5">
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          <div><p class="text-gold-400 text-xs font-semibold">LEDGER RECORDS</p><h2 class="text-2xl font-extrabold mt-1">ලෙජර් දත්ත පද්ධතිය</h2><p class="text-xs text-slate-400 mt-2">සියලුම ලෙජර්වල දත්ත සෙවීම, සංස්කරණය සහ පාලනය.</p></div>
+          <div class="flex flex-wrap gap-2 no-print">
+            <button onclick="refreshData()" class="rounded-lg bg-slate-800 hover:bg-slate-700 px-3 py-2 text-sm"><i class="fa-solid fa-rotate mr-2"></i>Refresh</button>
+            <button onclick="exportCSV()" class="rounded-lg bg-emerald-700 hover:bg-emerald-600 px-3 py-2 text-sm"><i class="fa-solid fa-file-csv mr-2"></i>CSV</button>
+            <button onclick="window.print()" class="rounded-lg bg-slate-700 hover:bg-slate-600 px-3 py-2 text-sm"><i class="fa-solid fa-print mr-2"></i>Print</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[minmax(220px,1fr)_minmax(240px,2fr)_auto] gap-3 mt-5 no-print">
+          <select id="view-filter-ledger" class="field" aria-label="ලෙජරය අනුව පෙරහන්"><option value="ALL">සියලුම ලෙජර්</option></select>
+          <input id="view-search-input" class="field" type="search" placeholder="අයිතමය / සීරියල් / ස්ථානය සොයන්න..." />
+          <div class="rounded-xl bg-slate-950 border border-slate-700 px-4 py-3 text-sm"><span class="text-slate-400">පෙන්වන සටහන්: </span><b id="visible-count" class="text-gold-300">0</b></div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl overflow-hidden">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>#</th><th>දිනය</th><th>ලෙජරය</th><th>අයිතමය</th><th>සීරියල් අංකය</th><th>නාමාවලි අංකය</th><th>වත්කම් අංකය</th><th>මුළු ප්‍රමාණය</th><th>නිකුත් ප්‍රමාණය</th><th>ගබඩා ඉතිරිය</th><th>ස්ථානය</th><th>පානු</th><th>පාසු</th><th class="no-print">ක්‍රියාමාර්ග</th>
+            </tr></thead>
+            <tbody id="ledger-table-body"></tbody>
+          </table>
+        </div>
+        <div id="table-empty-msg" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-inbox text-4xl mb-3"></i><p>පෙන්වීමට දත්ත නොමැත.</p></div>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="section-settings" class="hidden-section">
+      <div class="glass rounded-2xl p-5 sm:p-8 max-w-3xl mx-auto space-y-6">
+        <div class="border-b border-slate-700 pb-5"><p class="text-gold-400 text-xs font-semibold">CONNECTION & ACCESS</p><h2 class="text-2xl font-extrabold mt-1">Google Sheets සම්බන්ධතාවය</h2><p class="text-sm text-slate-400 mt-2">Apps Script Web App URL සහ ඔබට ලබාදුන් ප්‍රවේශ යතුර ඇතුළත් කරන්න.</p></div>
+        <div><label class="field-label" for="sheet-webhook-url">Google Apps Script Web App URL</label><input class="field" type="url" id="sheet-webhook-url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="url" /><p class="text-xs text-slate-500 mt-2">Deploy කළ Apps Script එකේ /exec URL එක භාවිත කරන්න.</p></div>
+        <div><label class="field-label" for="access-token">ප්‍රවේශ යතුර (Access Token)</label><div class="flex gap-2"><input class="field" type="password" id="access-token" placeholder="ඔබට ලබාදුන් View හෝ Admin key එක" autocomplete="off" /><button type="button" onclick="toggleTokenVisibility()" class="rounded-lg bg-slate-800 border border-slate-700 px-4"><i id="token-eye" class="fa-solid fa-eye"></i></button></div><p class="text-xs text-slate-500 mt-2">View key එකෙන් දත්ත බැලිය හැක. Admin key එකෙන් දත්ත ඇතුළත්, Edit සහ Delete කළ හැක.</p></div>
+        <div id="settings-status" class="text-sm text-slate-300"></div>
+        <div class="flex flex-col sm:flex-row gap-3"><button onclick="connectSettings()" id="btn-connect" class="gold-gradient rounded-xl px-6 py-3 font-bold"><i class="fa-solid fa-link mr-2"></i>සම්බන්ධ කරන්න</button><button onclick="disconnectSettings()" class="rounded-xl border border-rose-500/40 text-rose-300 hover:bg-rose-500/10 px-6 py-3">සම්බන්ධතාවය ඉවත් කරන්න</button></div>
+        <div class="rounded-xl bg-slate-950 border border-slate-700 p-4 text-xs text-slate-400 leading-6"><b class="text-gold-300">ආරක්ෂක සටහන:</b> Admin key එක විශ්වාසවන්ත පරිපාලකයාට පමණක් දෙන්න. අනෙක් කාර්යාලීය පරිශීලකයන්ට View key එක දෙන්න. Key එක GitHub හි index.html තුළ ලියන්න එපා.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 bg-navy-950 py-4 text-center text-xs text-slate-500">© 2026 උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව · Inventory Store Management</footer>
+  <div id="toast" class="toast hidden rounded-xl border px-4 py-3 text-sm"></div>
+
+  <script>
+    'use strict';
+
+    const LEDGERS = [
+      'බැරැක්ක භාණ්ඩ ලෙජරය',
+      'පාලන උපකරණ ලෙජරය',
+      'උපකරණ ලෙජරය',
+      'සංඥා ලෙජරය',
+      'ක්‍රීඩා භාණ්ඩ සහ සුභසාධක ලෙජරය',
+      'යාන්ත්‍රික ප්‍රවාහන ලෙජරය',
+      'සිතියම් ලෙජරය',
+      'පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය',
+      'ඒකක දේපල ලෙජරය'
+    ];
+    const STORE_LOCATION = 'උපකරණ ගබඩාව';
+    const STORAGE_URL_KEY = 'gajaba_inventory_webhook_url_v2';
+    const STORAGE_TOKEN_KEY = 'gajaba_inventory_access_token_v2';
+
+    let storeData = [];
+    let currentRole = '';
+    let editingRecordId = null;
+    let activeSection = 'dashboard';
+    let toastTimer = null;
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+
+    function initializeApp() {
+      populateLedgerSelectors();
+      document.getElementById('field-date').value = todayLocal();
+      document.getElementById('field-ledger').value = LEDGERS[0];
+
+      ['field-ledger','field-item','field-serial','field-catalog','field-asset','field-issued-qty','field-location'].forEach(function(id) {
+        const el = document.getElementById(id);
+        el.addEventListener('input', calculatePreview);
+        el.addEventListener('change', calculatePreview);
+      });
+      document.getElementById('store-form').addEventListener('submit', handleFormSubmit);
+      document.getElementById('view-filter-ledger').addEventListener('change', renderTable);
+      document.getElementById('view-search-input').addEventListener('input', renderTable);
+      document.getElementById('ledger-table-body').addEventListener('click', handleTableAction);
+
+      const savedUrl = localStorage.getItem(STORAGE_URL_KEY) || '';
+      const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY) || '';
+      document.getElementById('sheet-webhook-url').value = savedUrl;
+      document.getElementById('access-token').value = savedToken;
+      renderLedgerCards();
+
+      if (savedUrl && savedToken) {
+        connectSettings(true).catch(function () { switchSection('settings', false); });
+      } else {
+        setConnectionMessage('පළමුව Google Sheets URL සහ Access Token එක Settings පිටුවෙන් සකස් කරන්න.');
+        switchSection('settings', false);
+      }
+    }
+
+    function populateLedgerSelectors() {
+      const formSelect = document.getElementById('field-ledger');
+      const filterSelect = document.getElementById('view-filter-ledger');
+      formSelect.innerHTML = LEDGERS.map(function(name) { return '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>'; }).join('');
+      filterSelect.innerHTML = '<option value="ALL">සියලුම ලෙජර්</option>' + LEDGERS.map(function(name) { return '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>'; }).join('');
+    }
+
+    function todayLocal() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 10);
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || value === undefined ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function normalizeKey(value) {
+      const text = String(value === null || value === undefined ? '' : value).trim();
+      return (text === '-' || text === '—') ? '' : text.toLocaleLowerCase();
+    }
+
+    function recordGroupKey(record) {
+      return [record.ledger, record.item, record.serial, record.catalog, record.asset].map(normalizeKey).join('¦');
+    }
+
+    function switchSection(section, shouldRefresh) {
+      if (!['dashboard','form','ledger-view','settings'].includes(section)) return;
+      activeSection = section;
+      ['dashboard','form','ledger-view','settings'].forEach(function(name) {
+        document.getElementById('section-' + name).classList.toggle('hidden-section', name !== section);
+      });
+      document.querySelectorAll('[data-nav]').forEach(function(button) {
+        button.classList.toggle('active', button.dataset.nav === section || (section === 'form' && button.dataset.nav === 'form'));
+      });
+      if (section === 'dashboard' || section === 'ledger-view') {
+        if (shouldRefresh !== false && getSavedUrl() && getSavedToken()) refreshData();
+      }
+      if (section === 'ledger-view') renderTable();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setConnectionMessage(message) {
+      const strip = document.getElementById('connection-strip');
+      document.getElementById('connection-message').textContent = message;
+      strip.classList.remove('hidden');
+    }
+
+    function clearConnectionMessage() {
+      document.getElementById('connection-strip').classList.add('hidden');
+    }
+
+    function getSavedUrl() { return localStorage.getItem(STORAGE_URL_KEY) || ''; }
+    function getSavedToken() { return localStorage.getItem(STORAGE_TOKEN_KEY) || ''; }
+
+    function apiUrl(action, url, token) {
+      const endpoint = new URL(url);
+      endpoint.searchParams.set('action', action);
+      endpoint.searchParams.set('token', token);
+      endpoint.searchParams.set('_ts', String(Date.now()));
+      return endpoint.toString();
+    }
+
+    async function apiGet(action, url, token) {
+      const response = await fetch(apiUrl(action, url, token), { method: 'GET', cache: 'no-store', redirect: 'follow' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const data = await response.json();
+      if (!data || data.ok !== true) throw new Error((data && data.message) || (data && data.error) || 'Google Apps Script ප්‍රතිචාරය වලංගු නැත.');
+      return data;
+    }
+
+    async function connectSettings(silent) {
+      const url = document.getElementById('sheet-webhook-url').value.trim();
+      const token = document.getElementById('access-token').value.trim();
+      const status = document.getElementById('settings-status');
+      const button = document.getElementById('btn-connect');
+      if (!url || !token) {
+        status.textContent = 'Webhook URL සහ Access Token දෙකම ඇතුළත් කරන්න.';
+        status.className = 'text-sm text-rose-300';
+        if (!silent) showToast('URL සහ Access Token අවශ්‍යයි.', true);
+        throw new Error('Missing URL or access token');
+      }
+      try { new URL(url); } catch (e) {
+        status.textContent = 'Webhook URL එක නිවැරදි URL එකක් නොවේ.';
+        status.className = 'text-sm text-rose-300';
+        throw new Error('Invalid URL');
+      }
+
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>සම්බන්ධ වෙමින්...';
+      status.textContent = 'Google Apps Script සමඟ සම්බන්ධ වෙමින් පවතී...';
+      status.className = 'text-sm text-slate-300';
+      try {
+        const result = await apiGet('ping', url, token);
+        localStorage.setItem(STORAGE_URL_KEY, url);
+        localStorage.setItem(STORAGE_TOKEN_KEY, token);
+        currentRole = result.role;
+        applyRoleUI();
+        await refreshData(true);
+        status.textContent = currentRole === 'admin' ? 'සාර්ථකව සම්බන්ධ විය · Admin ප්‍රවේශය' : 'සාර්ථකව සම්බන්ධ විය · View ප්‍රවේශය';
+        status.className = 'text-sm text-emerald-300';
+        clearConnectionMessage();
+        document.getElementById('role-pill').textContent = currentRole === 'admin' ? 'Admin access' : 'View only';
+        if (!silent) showToast('Google Sheets සම්බන්ධතාවය සාර්ථකයි.');
+        switchSection('dashboard', false);
+        return true;
+      } catch (error) {
+        currentRole = '';
+        applyRoleUI();
+        status.textContent = 'සම්බන්ධ වීමට නොහැකි විය: ' + error.message;
+        status.className = 'text-sm text-rose-300';
+        setConnectionMessage('Google Sheets සම්බන්ධතාවය තහවුරු කළ නොහැක. URL සහ Access Token පරීක්ෂා කරන්න.');
+        if (!silent) showToast('සම්බන්ධතාවය අසාර්ථකයි: ' + error.message, true);
+        throw error;
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-link mr-2"></i>සම්බන්ධ කරන්න';
+      }
+    }
+
+    function applyRoleUI() {
+      const isAdmin = currentRole === 'admin';
+      document.getElementById('nav-entry').classList.toggle('hidden', !isAdmin);
+      document.getElementById('dashboard-add-btn').classList.toggle('hidden', !isAdmin);
+      document.getElementById('role-pill').textContent = isAdmin ? 'Admin access' : (currentRole === 'viewer' ? 'View only' : 'සම්බන්ධ වී නැත');
+    }
+
+    function disconnectSettings() {
+      localStorage.removeItem(STORAGE_URL_KEY);
+      localStorage.removeItem(STORAGE_TOKEN_KEY);
+      document.getElementById('sheet-webhook-url').value = '';
+      document.getElementById('access-token').value = '';
+      currentRole = '';
+      storeData = [];
+      applyRoleUI();
+      renderDashboard();
+      renderTable();
+      setConnectionMessage('සම්බන්ධතාවය ඉවත් කර ඇත. නැවත සම්බන්ධ වීමට Settings විවෘත කරන්න.');
+      showToast('මෙම Browser එකේ සම්බන්ධතා සැකසුම් ඉවත් කරන ලදී.');
+    }
+
+    function toggleTokenVisibility() {
+      const input = document.getElementById('access-token');
+      const eye = document.getElementById('token-eye');
+      const visible = input.type === 'password';
+      input.type = visible ? 'text' : 'password';
+      eye.className = visible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    }
+
+    async function refreshData(silent) {
+      const url = getSavedUrl();
+      const token = getSavedToken();
+      if (!url || !token) {
+        if (!silent) setConnectionMessage('Google Sheets URL සහ Access Token සකස් කරන්න.');
+        return false;
+      }
+      try {
+        const result = await apiGet('list', url, token);
+        storeData = Array.isArray(result.records) ? result.records : [];
+        currentRole = result.role || currentRole;
+        applyRoleUI();
+        renderDashboard();
+        renderTable();
+        document.getElementById('last-sync').textContent = 'අවසන් යාවත්කාලීන කිරීම: ' + new Date().toLocaleTimeString('si-LK');
+        clearConnectionMessage();
+        return true;
+      } catch (error) {
+        console.error('Refresh failed:', error);
+        if (!silent) showToast('දත්ත ලබාගැනීමට නොහැකි විය: ' + error.message, true);
+        setConnectionMessage('Google Sheets වෙතින් දත්ත ලබාගැනීමට නොහැකි විය. Settings සහ Apps Script deployment පරීක්ෂා කරන්න.');
+        return false;
+      }
+    }
+
+    function renderLedgerCards() {
+      const container = document.getElementById('ledger-cards');
+      container.innerHTML = LEDGERS.map(function(ledger, index) {
+        const count = storeData.filter(function(r) { return r.ledger === ledger; }).length;
+        const icons = ['fa-bed','fa-clipboard-check','fa-boxes-stacked','fa-walkie-talkie','fa-volleyball','fa-truck','fa-map-location-dot','fa-broom','fa-building-shield'];
+        return '<button class="ledger-card rounded-2xl p-5 text-left" onclick="openLedgerFilter(' + index + ')">' +
+          '<div class="flex items-start justify-between gap-3"><div class="h-12 w-12 rounded-xl bg-gold-500/15 text-gold-400 flex items-center justify-center text-xl"><i class="fa-solid ' + icons[index] + '"></i></div>' +
+          '<span class="rounded-full bg-slate-950/60 border border-slate-500/30 px-3 py-1 text-xs text-slate-200">' + count + ' සටහන්</span></div>' +
+          '<h4 class="font-bold text-gold-300 mt-4 leading-6">' + escapeHtml(ledger) + '</h4>' +
+          '<p class="text-xs text-slate-400 mt-2">දත්ත බලන්න <i class="fa-solid fa-arrow-right ml-1"></i></p></button>';
+      }).join('');
+    }
+
+    function openLedgerFilter(index) {
+      document.getElementById('view-filter-ledger').value = LEDGERS[index] || 'ALL';
+      document.getElementById('view-search-input').value = '';
+      switchSection('ledger-view');
+      renderTable();
+    }
+
+    function renderDashboard() {
+      const today = todayLocal();
+      const todayCount = storeData.filter(function(r) { return String(r.date || '').slice(0,10) === today; }).length;
+      const uniqueItems = new Set(storeData.map(recordGroupKey));
+      const activeLedgers = new Set(storeData.map(function(r) { return r.ledger; })).size;
+      document.getElementById('stat-records').textContent = storeData.length.toLocaleString();
+      document.getElementById('stat-ledgers').textContent = activeLedgers.toLocaleString() + ' / 9';
+      document.getElementById('stat-today').textContent = todayCount.toLocaleString();
+      document.getElementById('stat-items').textContent = uniqueItems.size.toLocaleString();
+      renderLedgerCards();
+
+      const recent = storeData.slice().sort(function(a,b) {
+        const av = Date.parse(a.createdAt || a.date || '') || 0;
+        const bv = Date.parse(b.createdAt || b.date || '') || 0;
+        return bv - av;
+      }).slice(0,5);
+      const recentBox = document.getElementById('recent-records');
+      if (!recent.length) {
+        recentBox.innerHTML = '<p class="text-sm text-slate-500">තවම දත්ත සටහන් නොමැත.</p>';
+        return;
+      }
+      recentBox.innerHTML = recent.map(function(r) {
+        return '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl bg-slate-950/50 border border-slate-700/60 px-3 py-3">' +
+          '<div class="min-w-0"><p class="font-semibold text-sm truncate">' + escapeHtml(r.item) + '</p><p class="text-xs text-slate-400 mt-1">' + escapeHtml(r.ledger) + ' · ' + escapeHtml(r.location) + '</p></div>' +
+          '<div class="flex items-center gap-4 text-xs text-slate-300"><span>' + escapeHtml(r.date) + '</span><b class="text-gold-300">' + Number(r.issuedQty || 0).toLocaleString() + '</b></div></div>';
+      }).join('');
+    }
+
+    function getFilteredRecords() {
+      const selectedLedger = document.getElementById('view-filter-ledger').value;
+      const query = document.getElementById('view-search-input').value.trim().toLocaleLowerCase();
+      return storeData.filter(function(item) {
+        const matchesLedger = selectedLedger === 'ALL' || item.ledger === selectedLedger;
+        const searchable = [item.item,item.location,item.serial,item.catalog,item.asset,item.panu,item.pasu].join(' ').toLocaleLowerCase();
+        return matchesLedger && searchable.includes(query);
+      });
+    }
+
+    function renderTable() {
+      const body = document.getElementById('ledger-table-body');
+      const empty = document.getElementById('table-empty-msg');
+      if (!body) return;
+      const rows = getFilteredRecords();
+      document.getElementById('visible-count').textContent = rows.length.toLocaleString();
+      if (!rows.length) {
+        body.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      const isAdmin = currentRole === 'admin';
+      body.innerHTML = rows.map(function(r, index) {
+        const actions = isAdmin
+          ? '<div class="flex items-center justify-center gap-2 no-print"><button class="icon-action edit" title="Edit" aria-label="Edit" data-action="edit" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-pen-to-square"></i></button><button class="icon-action delete" title="Delete" aria-label="Delete" data-action="delete" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-trash-can"></i></button></div>'
+          : '<span class="text-slate-600 text-xs no-print">View only</span>';
+        return '<tr>' +
+          '<td class="text-slate-500">' + (index + 1) + '</td>' +
+          '<td class="whitespace-nowrap">' + escapeHtml(r.date) + '</td>' +
+          '<td class="text-gold-300 whitespace-nowrap">' + escapeHtml(r.ledger) + '</td>' +
+          '<td class="font-semibold text-slate-100">' + escapeHtml(r.item) + '</td>' +
+          '<td>' + escapeHtml(r.serial || '-') + '</td>' +
+          '<td>' + escapeHtml(r.catalog || '-') + '</td>' +
+          '<td>' + escapeHtml(r.asset || '-') + '</td>' +
+          '<td class="text-center font-bold">' + Number(r.totalQty || 0).toLocaleString() + '</td>' +
+          '<td class="text-center font-bold text-rose-300">' + Number(r.issuedQty || 0).toLocaleString() + '</td>' +
+          '<td class="text-center font-bold text-emerald-300">' + Number(r.balance || 0).toLocaleString() + '</td>' +
+          '<td>' + escapeHtml(r.location || '-') + '</td>' +
+          '<td>' + escapeHtml(r.panu || '-') + '</td>' +
+          '<td>' + escapeHtml(r.pasu || '-') + '</td>' +
+          '<td class="no-print">' + actions + '</td></tr>';
+      }).join('');
+    }
+
+    function sameInventoryGroup(a, b) {
+      return recordGroupKey(a) === recordGroupKey(b);
+    }
+
+    function calculatePreview() {
+      const candidate = {
+        ledger: document.getElementById('field-ledger').value,
+        item: document.getElementById('field-item').value,
+        serial: document.getElementById('field-serial').value,
+        catalog: document.getElementById('field-catalog').value,
+        asset: document.getElementById('field-asset').value
+      };
+      const qty = Math.max(0, Number(document.getElementById('field-issued-qty').value) || 0);
+      const location = document.getElementById('field-location').value;
+      if (!candidate.item.trim()) {
+        document.getElementById('field-total-qty').value = qty;
+        document.getElementById('field-balance').value = normalizeKey(location) === normalizeKey(STORE_LOCATION) ? qty : 0;
+        return;
+      }
+      const existing = storeData.filter(function(r) {
+        return r.id !== editingRecordId && sameInventoryGroup(r, candidate);
+      });
+      const previousTotal = existing.reduce(function(sum,r) { return sum + (Number(r.issuedQty) || 0); }, 0);
+      const previousStore = existing.reduce(function(sum,r) {
+        return sum + (normalizeKey(r.location) === normalizeKey(STORE_LOCATION) ? (Number(r.issuedQty) || 0) : 0);
+      }, 0);
+      const newStoreQty = normalizeKey(location) === normalizeKey(STORE_LOCATION) ? qty : 0;
+      document.getElementById('field-total-qty').value = previousTotal + qty;
+      document.getElementById('field-balance').value = previousStore + newStoreQty;
+    }
+
+    function openNewRecord(ledger) {
+      if (currentRole !== 'admin') { showToast('දත්ත ඇතුළත් කිරීමට Admin access අවශ්‍යයි.', true); return; }
+      editingRecordId = null;
+      document.getElementById('store-form').reset();
+      document.getElementById('field-date').value = todayLocal();
+      document.getElementById('field-ledger').value = ledger || LEDGERS[0];
+      document.getElementById('field-issued-qty').value = '0';
+      document.getElementById('form-title').textContent = 'නව දත්ත ඇතුළත් කිරීම';
+      document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>සේව් කරන්න';
+      calculatePreview();
+      switchSection('form', false);
+    }
+
+    function editRecord(id) {
+      if (currentRole !== 'admin') { showToast('Edit කිරීමට Admin access අවශ්‍යයි.', true); return; }
+      const record = storeData.find(function(r) { return r.id === id; });
+      if (!record) { showToast('අදාළ දත්ත සටහන හමු නොවීය. Refresh කර නැවත උත්සාහ කරන්න.', true); return; }
+      editingRecordId = id;
+      document.getElementById('field-date').value = String(record.date || '').slice(0,10) || todayLocal();
+      document.getElementById('field-ledger').value = record.ledger;
+      document.getElementById('field-item').value = record.item;
+      document.getElementById('field-serial').value = record.serial || '';
+      document.getElementById('field-catalog').value = record.catalog || '';
+      document.getElementById('field-asset').value = record.asset || '';
+      document.getElementById('field-issued-qty').value = Number(record.issuedQty || 0);
+      document.getElementById('field-location').value = record.location || '';
+      document.getElementById('field-panu').value = record.panu || '';
+      document.getElementById('field-pasu').value = record.pasu || '';
+      document.getElementById('form-title').textContent = 'දත්ත සංස්කරණය කිරීම';
+      document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-check mr-2"></i>වෙනස්කම් සුරකින්න';
+      calculatePreview();
+      switchSection('form', false);
+    }
+
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      if (currentRole !== 'admin') { showToast('දත්ත සුරැකීමට Admin access අවශ්‍යයි.', true); return; }
+
+      const record = {
+        id: editingRecordId || createRecordId(),
+        date: document.getElementById('field-date').value,
+        ledger: document.getElementById('field-ledger').value,
+        item: document.getElementById('field-item').value.trim(),
+        serial: document.getElementById('field-serial').value.trim(),
+        catalog: document.getElementById('field-catalog').value.trim(),
+        asset: document.getElementById('field-asset').value.trim(),
+        issuedQty: Number(document.getElementById('field-issued-qty').value) || 0,
+        location: document.getElementById('field-location').value.trim(),
+        panu: document.getElementById('field-panu').value.trim(),
+        pasu: document.getElementById('field-pasu').value.trim()
+      };
+      if (!record.item || !record.location || record.issuedQty < 0) {
+        showToast('අවශ්‍ය දත්ත නිවැරදිව ඇතුළත් කරන්න.', true); return;
+      }
+
+      const action = editingRecordId ? 'update' : 'add';
+      const button = document.getElementById('btn-save');
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>සුරකිමින්...';
+      try {
+        await sendWrite({ action: action, record: record }, function() {
+          return storeData.some(function(r) { return r.id === record.id; });
         });
+        editingRecordId = null;
+        showToast(action === 'add' ? 'දත්ත සාර්ථකව ඇතුළත් කළා.' : 'දත්ත වෙනස්කම් සුරැකුවා.');
+        document.getElementById('store-form').reset();
+        document.getElementById('field-date').value = todayLocal();
+        switchSection('ledger-view', false);
+        document.getElementById('view-filter-ledger').value = record.ledger;
+        document.getElementById('view-search-input').value = '';
+        renderTable();
+      } catch (error) {
+        console.error(error);
+        showToast('සුරැකීම තහවුරු කළ නොහැකි විය: ' + error.message, true);
+      } finally {
+        button.disabled = false;
+        button.innerHTML = editingRecordId ? '<i class="fa-solid fa-check mr-2"></i>වෙනස්කම් සුරකින්න' : '<i class="fa-solid fa-floppy-disk mr-2"></i>සේව් කරන්න';
+      }
+    }
 
-        // Fetch Live Data Function
-        function fetchLiveData(url) {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("සජීවී දත්ත ලැබුණි:", data);
-                    if (Array.isArray(data)) {
-                        storeData = data;
-                    } else {
-                        storeData = [];
-                    }
-                    renderTable();
-                })
-                .catch(error => {
-                    console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error);
-                    renderTable();
-                });
-        }
+    function createRecordId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'REC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,12);
+    }
 
-        // Section Switching Function
-        function showSection(sectionId) {
-            document.getElementById('section-dashboard').classList.add('hidden');
-            document.getElementById('section-form').classList.add('hidden');
-            document.getElementById('section-ledger-view').classList.add('hidden');
-            document.getElementById('section-sheet-config').classList.add('hidden');
+    async function sendWrite(payload, verify) {
+      const url = getSavedUrl();
+      const token = getSavedToken();
+      if (!url || !token) throw new Error('Google Sheets සම්බන්ධතාවය සකස් කර නැත.');
+      payload.token = token;
+      // text/plain avoids a CORS preflight. no-cors responses are opaque,
+      // so we verify the change by reading the Sheet again.
+      await fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
 
-            const activeSection = document.getElementById('section-' + sectionId);
-            if (activeSection) {
-                activeSection.classList.remove('hidden');
-            }
+      let confirmed = false;
+      for (let attempt = 0; attempt < 4; attempt++) {
+        await new Promise(function(resolve) { setTimeout(resolve, 700 + attempt * 450); });
+        const refreshed = await refreshData(true);
+        if (refreshed && verify()) { confirmed = true; break; }
+      }
+      if (!confirmed) throw new Error('Google Sheets වෙත යැවූ වෙනස නැවත කියවා තහවුරු කළ නොහැකි විය. Sheet එක පරීක්ෂා කරන්න.');
+    }
 
-            if (sectionId === 'ledger-view') {
-                renderTable();
-            }
-        }
+    async function handleTableAction(event) {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const id = button.dataset.id;
+      if (button.dataset.action === 'edit') editRecord(id);
+      if (button.dataset.action === 'delete') await deleteRecord(id);
+    }
 
-        // Open Specific Ledger Form
-        function openLedgerForm(ledgerName) {
-            showSection('form');
-            const ledgerSelect = document.getElementById('field-ledger');
-            if (ledgerSelect) {
-                ledgerSelect.value = ledgerName;
-            }
-            const titleText = document.getElementById('form-title-text');
-            if (titleText) {
-                titleText.innerText = ledgerName + " - දත්ත ඇතුළත් කිරීම";
-            }
-            calculateBalance();
-        }
+    async function deleteRecord(id) {
+      if (currentRole !== 'admin') { showToast('Delete කිරීමට Admin access අවශ්‍යයි.', true); return; }
+      const record = storeData.find(function(r) { return r.id === id; });
+      if (!record) { showToast('දත්ත සටහන සොයාගත නොහැක.', true); return; }
+      if (!confirm('“' + record.item + '” දත්ත සටහන Google Sheet එකෙන්ම මකා දැමීමට අවශ්‍යද? මෙම ක්‍රියාව නැවත ලබාගත නොහැක.')) return;
+      try {
+        await sendWrite({ action: 'delete', id: id }, function() {
+          return !storeData.some(function(r) { return r.id === id; });
+        });
+        showToast('දත්ත සටහන Google Sheet එකෙන් මකා දැමුවා.');
+      } catch (error) {
+        showToast('Delete තහවුරු කළ නොහැකි විය: ' + error.message, true);
+      }
+    }
 
-        // Store Balance Auto Calculation
-        function calculateBalance() {
-            const total = parseFloat(document.getElementById('field-total-qty').value) || 0;
-            const issued = parseFloat(document.getElementById('field-issued-qty').value) || 0;
-            const balanceField = document.getElementById('field-balance');
-            if (balanceField) {
-                balanceField.value = total - issued;
-            }
-        }
+    function exportCSV() {
+      const rows = getFilteredRecords();
+      if (!rows.length) { showToast('Export කිරීමට දත්ත නොමැත.', true); return; }
+      const headers = ['දිනය','ලෙජරය','අයිතමය','සීරියල් අංකය','නාමාවලි අංකය','ස්ථාවර වත්කම් අංකය','මුළු ප්‍රමාණය','නිකුත් කිරීම් ප්‍රමාණය','නිකුත් කර ඇති ස්ථානය','ගබඩාවේ ඉතිරිය','පානු','පාසු'];
+      const keys = ['date','ledger','item','serial','catalog','asset','totalQty','issuedQty','location','balance','panu','pasu'];
+      function csvCell(value) { return '"' + String(value === null || value === undefined ? '' : value).replace(/"/g,'""') + '"'; }
+      const csv = '\uFEFF' + [headers.map(csvCell).join(','), ...rows.map(function(r) { return keys.map(function(k) { return csvCell(r[k]); }).join(','); })].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Gajaba_Store_Ledger_' + todayLocal() + '.csv';
+      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+    }
 
-        // Render Data Table Function
-        function renderTable() {
-            const tableBody = document.getElementById('ledger-table-body');
-            const emptyMsg = document.getElementById('table-empty-msg');
-            if (!tableBody) return;
-
-            tableBody.innerHTML = '';
-
-            const selectedLedger = document.getElementById('view-filter-ledger').value;
-            const searchQuery = document.getElementById('view-search-input').value.toLowerCase().trim();
-
-            // Filter Data
-            const filteredData = storeData.filter(item => {
-                const itemLedger = item["ලෙජරය"] || item.ledger || '';
-                const itemName = (item["අයිතමය"] || item.item || '').toString().toLowerCase();
-                const itemLoc = (item["නිකුත් කර ඇති ස්ථානය"] || item.location || '').toString().toLowerCase();
-                const itemSerial = (item["සීරියල් අංකය"] || item.serial || '').toString().toLowerCase();
-
-                const matchesLedger = (selectedLedger === 'ALL' || itemLedger === selectedLedger);
-                const matchesSearch = itemName.includes(searchQuery) || itemLoc.includes(searchQuery) || itemSerial.includes(searchQuery);
-
-                return matchesLedger && matchesSearch;
-            });
-
-            if (filteredData.length === 0) {
-                if (emptyMsg) emptyMsg.classList.remove('hidden');
-                return;
-            } else {
-                if (emptyMsg) emptyMsg.classList.add('hidden');
-            }
-
-            // Render Rows with exact mappings to Google Sheet headers
-            filteredData.forEach((item, index) => {
-                const dateVal = item["දිනය"] || item.date || '';
-                const ledgerVal = item["ලෙජරය"] || item.ledger || '';
-                const itemVal = item["අයිතමය"] || item.item || '';
-                const serialVal = item["සීරියල් අංකය"] || item.serial || '-';
-                const catalogVal = item["නාමාවලි අංකය"] || item.catalog || '-';
-                const assetVal = item["ස්ථාවර වත්කම් අංකය"] || item.asset || '-';
-                const totalQtyVal = item["ප්‍රමාණය"] || item.totalQty || 0;
-                const issuedQtyVal = item["නිකුත් කිරීමේ ප්‍රමාණය"] || item["නිකුත් කිරීම් ප්‍රමාණය"] || item.issuedQty || 0;
-                const balanceVal = item["ගබඩාවේ ඉතිරිය"] || item.balance || (totalQtyVal - issuedQtyVal);
-                const locationVal = item["නිකුත් කර ඇති ස්ථානය"] || item.location || '-';
-                const panuVal = item["පානු"] || item.panu || '-';
-                const pasuVal = item["පාසු"] || item.pasu || '-';
-
-                const row = `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="p-3 text-slate-400 font-mono text-xs">${index + 1}</td>
-                        <td class="p-3 font-semibold text-white">${dateVal}</td>
-                        <td class="p-3 text-gold-400 font-medium">${ledgerVal}</td>
-                        <td class="p-3 font-bold text-slate-200">${itemVal}</td>
-                        <td class="p-3 font-mono text-xs text-slate-300">${serialVal}</td>
-                        <td class="p-3 text-xs text-slate-300">${catalogVal}</td>
-                        <td class="p-3 text-xs text-slate-300">${assetVal}</td>
-                        <td class="p-3 text-center font-bold text-white">${totalQtyVal}</td>
-                        <td class="p-3 text-center font-bold text-rose-400">${issuedQtyVal}</td>
-                        <td class="p-3 text-center font-bold text-emerald-400">${balanceVal}</td>
-                        <td class="p-3 text-slate-300 text-xs">${locationVal}</td>
-                        <td class="p-3 text-slate-400 text-xs">${panuVal}</td>
-                        <td class="p-3 text-slate-400 text-xs">${pasuVal}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="deleteRow(${index})" class="text-rose-400 hover:text-rose-300 transition">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
-        }
-
-        // Form Submit Handler
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const btnSubmit = document.getElementById('btn-submit-form');
-            if (btnSubmit) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> සේව් වෙමින් පවතියි...`;
-            }
-
-            const formData = {
-                date: document.getElementById('field-date').value,
-                ledger: document.getElementById('field-ledger').value,
-                item: document.getElementById('field-item').value,
-                serial: document.getElementById('field-serial').value || '-',
-                catalog: document.getElementById('field-catalog').value || '-',
-                asset: document.getElementById('field-asset').value || '-',
-                totalQty: parseFloat(document.getElementById('field-total-qty').value) || 0,
-                issuedQty: parseFloat(document.getElementById('field-issued-qty').value) || 0,
-                location: document.getElementById('field-location').value,
-                balance: parseFloat(document.getElementById('field-balance').value) || 0,
-                panu: document.getElementById('field-panu').value || '-',
-                pasu: document.getElementById('field-pasu').value || '-'
-            };
-
-            const scriptUrl = document.getElementById('sheet-webhook-url').value;
-
-            // Send data to Apps Script
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(() => {
-                storeData.unshift({
-                    "දිනය": formData.date,
-                    "ලෙජරය": formData.ledger,
-                    "අයිතමය": formData.item,
-                    "සීරියල් අංකය": formData.serial,
-                    "නාමාවලි අංකය": formData.catalog,
-                    "ස්ථාවර වත්කම් අංකය": formData.asset,
-                    "ප්‍රමාණය": formData.totalQty,
-                    "නිකුත් කිරීම් ප්‍රමාණය": formData.issuedQty,
-                    "නිකුත් කර ඇති ස්ථානය": formData.location,
-                    "ගබඩාවේ ඉතිරිය": formData.balance,
-                    "පානු": formData.panu,
-                    "පාසු": formData.pasu
-                });
-
-                if (btnSubmit) {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> සේව් කරන්න (Save Record)`;
-                }
-
-                showToast("සාර්ථකයි! දත්ත Google Sheet එකට Save කරන ලදී.");
-                document.getElementById('store-form').reset();
-                document.getElementById('field-date').value = new Date().toISOString().split('T')[0];
-                showSection('ledger-view');
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                if (btnSubmit) {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> සේව් කරන්න (Save Record)`;
-                }
-                showToast("දත්ත සේව් කිරීමේදී දෝෂයක් සිදු විය!", true);
-            });
-        }
-
-        // Save Webhook URL Configuration
-        function saveWebhookUrl() {
-            const url = document.getElementById('sheet-webhook-url').value;
-            if (url) {
-                showToast("Google Sheet Webhook URL එක සාර්ථකව සම්බන්ධ විය!");
-                fetchLiveData(url);
-            }
-        }
-
-        // Toast Notification Display
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast-message');
-            const toastText = document.getElementById('toast-text');
-            if (toast && toastText) {
-                toastText.innerHTML = isError ? 
-                    `<i class="fa-solid fa-triangle-exclamation mr-2"></i> ${message}` : 
-                    `<i class="fa-solid fa-circle-check mr-2"></i> ${message}`;
-                
-                toast.className = isError ? 
-                    "mb-6 p-4 rounded-lg bg-rose-800 border border-rose-500 text-white flex justify-between items-center shadow-lg" : 
-                    "mb-6 p-4 rounded-lg bg-emerald-800 border border-emerald-500 text-white flex justify-between items-center shadow-lg";
-
-                toast.classList.remove('hidden');
-                setTimeout(() => hideToast(), 4000);
-            }
-        }
-
-        function hideToast() {
-            const toast = document.getElementById('toast-message');
-            if (toast) toast.classList.add('hidden');
-        }
-
-        // Local delete fallback
-        function deleteRow(index) {
-            if (confirm("මෙම දත්ත සටහන ඉවත් කිරීමට අවශ්‍යද?")) {
-                storeData.splice(index, 1);
-                renderTable();
-                showToast("සටහන ඉවත් කරන ලදී.");
-            }
-        }
-
-        // Export Table to CSV
-        function exportCSV() {
-            if (storeData.length === 0) {
-                alert("Export කිරීමට දත්ත නොමැත.");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "දිනය,ලෙජරය,අයිතමය,සීරියල් අංකය,නාමාවලි අංකය,ස්ථාවර වත්කම් අංකය,මුළු ප්‍රමාණය,නිකුත් ප්‍රමාණය,නිකුත් කළ ස්ථානය,ගබඩාවේ ඉතිරිය,පානු,පාසු\n";
-
-            storeData.forEach(item => {
-                let row = [
-                    `"${item["දිනය"] || item.date || ''}"`,
-                    `"${item["ලෙජරය"] || item.ledger || ''}"`,
-                    `"${item["අයිතමය"] || item.item || ''}"`,
-                    `"${item["සීරියල් අංකය"] || item.serial || ''}"`,
-                    `"${item["නාමාවලි අංකය"] || item.catalog || ''}"`,
-                    `"${item["ස්ථාවර වත්කම් අංකය"] || item.asset || ''}"`,
-                    `"${item["ප්‍රමාණය"] || item.totalQty || 0}"`,
-                    `"${item["නිකුත් කිරීම් ප්‍රමාණය"] || item.issuedQty || 0}"`,
-                    `"${item["නිකුත් කර ඇති ස්ථානය"] || item.location || ''}"`,
-                    `"${item["ගබඩාවේ ඉතිරිය"] || item.balance || 0}"`,
-                    `"${item["පානු"] || item.panu || ''}"`,
-                    `"${item["පාසු"] || item.pasu || ''}"`
-                ];
-                csvContent += row.join(",") + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Gajaba_Store_Ledger_Data_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
+    function showToast(message, isError) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast rounded-xl border px-4 py-3 text-sm ' + (isError ? 'bg-rose-950 border-rose-500 text-rose-100' : 'bg-emerald-950 border-emerald-500 text-emerald-100');
+      toast.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() { toast.classList.add('hidden'); }, 5000);
+    }
+  </script>
 </body>
 </html>
