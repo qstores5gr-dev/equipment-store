@@ -713,13 +713,18 @@ function doPost(e) {
             link.click();
             document.body.removeChild(link);
         }
-        // වෙබ් පේජ් එක ලෝඩ් වූ වහාම data.json එකෙන් දත්ත ලබා ගැනීම
-  document.addEventListener("DOMContentLoaded", function() {
-      fetch('data.json')
+       // වෙබ් පිටුව ලෝඩ් වූ වහාම Google Apps Script එක හරහා Google Sheet එකෙන් සජීවීව දත්ත ලබා ගැනීම
+document.addEventListener("DOMContentLoaded", function () {
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbyM3LkhoZzNuLFZbaYSH9yt8RNnEI-OhgNayQazSwfAeGs0i6gRV24tsNc1bAyCCtHeGg/exec";
+
+    fetch(scriptUrl)
         .then(response => response.json())
         .then(data => {
             console.log("දත්ත සාර්ථකව ලැබුණි:", data);
-            displayDataOnScreen(data);
+            displayDataOnScreen(data); // තිරයේ දත්ත පෙන්වන ඔබගේ මුල් פන්ක්ශන් එක
+        })
+        .catch(error => console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error));
+});
         })
         .catch(error => console.error('දත්ත ලබා ගැනීමේ දෝෂයක්:', error));
   });
