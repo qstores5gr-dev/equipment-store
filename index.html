@@ -41,6 +41,19 @@
     .data-table th { position:sticky; top:0; background:#1b365d; color:#facc15; font-size:.75rem; white-space:nowrap; text-align:left; padding:.85rem .75rem; }
     .data-table td { padding:.75rem; border-bottom:1px solid rgba(148,163,184,.12); font-size:.82rem; vertical-align:middle; }
     .data-table tbody tr:hover { background:rgba(255,255,255,.035); }
+    .mobile-record-list { display:none; }
+    .mobile-record-card { min-width:0; padding:1rem; border:1px solid rgba(212,175,55,.28); border-radius:1rem; background:linear-gradient(150deg,rgba(27,54,93,.88),rgba(11,20,37,.98)); box-shadow:0 8px 24px rgba(0,0,0,.18); }
+    .mobile-record-title { overflow-wrap:anywhere; font-size:1.05rem; line-height:1.5; font-weight:800; color:#f8fafc; }
+    .mobile-record-ledger { display:inline-flex; max-width:100%; margin-top:.35rem; padding:.25rem .55rem; border:1px solid rgba(212,175,55,.28); border-radius:999px; background:rgba(212,175,55,.09); color:#facc15; font-size:.69rem; line-height:1.4; overflow-wrap:anywhere; }
+    .mobile-record-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; margin-top:.9rem; }
+    .mobile-record-stat { min-width:0; padding:.65rem .45rem; border:1px solid rgba(148,163,184,.14); border-radius:.75rem; background:rgba(2,6,23,.38); text-align:center; }
+    .mobile-record-stat-label { display:block; color:#94a3b8; font-size:.64rem; line-height:1.4; }
+    .mobile-record-stat-value { display:block; margin-top:.2rem; font-size:1.1rem; line-height:1.35; font-weight:800; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .mobile-record-details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin-top:.75rem; }
+    .mobile-record-detail { min-width:0; padding:.55rem .65rem; border-radius:.65rem; background:rgba(2,6,23,.28); }
+    .mobile-record-detail-label { display:block; color:#94a3b8; font-size:.64rem; line-height:1.4; }
+    .mobile-record-detail-value { display:block; margin-top:.18rem; color:#e2e8f0; font-size:.78rem; line-height:1.5; overflow-wrap:anywhere; word-break:break-word; }
+    .mobile-record-actions { display:flex; align-items:center; justify-content:flex-end; gap:.55rem; margin-top:.8rem; padding-top:.7rem; border-top:1px solid rgba(148,163,184,.13); }
     .icon-action { width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:.6rem;transition:.2s; }
     .icon-action.edit { color:#facc15;background:rgba(250,204,21,.1); }
     .icon-action.delete { color:#fb7185;background:rgba(244,63,94,.1); }
@@ -50,10 +63,33 @@
     ::-webkit-scrollbar { width:9px;height:9px; }
     ::-webkit-scrollbar-track { background:#0f1e36; }
     ::-webkit-scrollbar-thumb { background:#9a7b24;border-radius:9px; }
+    @media (max-width: 767px) {
+      body { overflow-x:hidden; }
+      header .max-w-\[1500px\] { padding:.65rem .75rem; gap:.7rem; }
+      header h1 { font-size:.92rem; line-height:1.5; }
+      header p { font-size:.65rem; line-height:1.4; }
+      header .h-12.w-12 { width:2.65rem; height:2.65rem; flex:0 0 2.65rem; font-size:1.15rem; }
+      .app-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; gap:.35rem; }
+      .app-nav .nav-btn { min-width:0; min-height:3.35rem; padding:.4rem .18rem; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.18rem; text-align:center; white-space:normal; font-size:.64rem; line-height:1.35; }
+      .app-nav .nav-btn i { margin:0 !important; font-size:.95rem; }
+      .app-nav .nav-btn.hidden { display:none !important; }
+      main { padding-left:.75rem !important; padding-right:.75rem !important; padding-top:1rem !important; }
+      #section-ledger-view > .glass:first-child { padding:.9rem; }
+      #section-ledger-view > .glass:first-child h2 { font-size:1.25rem; }
+      #section-ledger-view > .glass:first-child .no-print button { min-height:2.65rem; }
+      #section-ledger-view .field { min-height:2.9rem; font-size:.88rem; }
+      .table-wrap { display:none; }
+      .mobile-record-list { display:grid; gap:.75rem; padding:.75rem; }
+      .mobile-record-actions .icon-action { width:2.65rem; height:2.65rem; font-size:1rem; }
+      #table-empty-msg { padding:2rem 1rem; }
+      .toast { right:.65rem; bottom:.65rem; max-width:calc(100vw - 1.3rem); }
+    }
     @media print {
       body { background:white !important;color:black !important; }
       header, footer, .no-print, #toast { display:none !important; }
       main { max-width:none !important;padding:0 !important; }
+      .table-wrap { display:block !important; overflow:visible !important; }
+      .mobile-record-list { display:none !important; }
       .data-table { min-width:0; }
       .data-table th,.data-table td { color:black !important;background:white !important;border:1px solid #bbb !important;font-size:9px; }
       #section-ledger-view { display:block !important; }
@@ -70,7 +106,7 @@
           <p class="text-xs text-slate-300">භාණ්ඩ සහ ලෙජර් කළමනාකරණ පද්ධතිය · Inventory Store Management</p>
         </div>
       </div>
-      <nav class="flex flex-wrap gap-2 no-print" aria-label="ප්‍රධාන මෙනුව">
+      <nav class="app-nav flex flex-wrap gap-2 no-print" aria-label="ප්‍රධාන මෙනුව">
         <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200 active" data-nav="dashboard" onclick="switchSection('dashboard')"><i class="fa-solid fa-house mr-2"></i>ප්‍රධාන මෙනුව</button>
         <button id="nav-entry" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="form" onclick="openNewRecord()"><i class="fa-solid fa-circle-plus mr-2"></i>දත්ත ඇතුළත් කිරීම</button>
         <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="ledger-view" onclick="switchSection('ledger-view')"><i class="fa-solid fa-table-list mr-2"></i>ලෙජර් දත්ත</button>
@@ -197,6 +233,7 @@
             <tbody id="ledger-table-body"></tbody>
           </table>
         </div>
+        <div id="ledger-mobile-cards" class="mobile-record-list" aria-live="polite"></div>
         <div id="table-empty-msg" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-inbox text-4xl mb-3"></i><p>පෙන්වීමට දත්ත නොමැත.</p></div>
       </div>
     </section>
@@ -257,6 +294,7 @@
       document.getElementById('view-filter-ledger').addEventListener('change', renderTable);
       document.getElementById('view-search-input').addEventListener('input', renderTable);
       document.getElementById('ledger-table-body').addEventListener('click', handleTableAction);
+      document.getElementById('ledger-mobile-cards').addEventListener('click', handleTableAction);
 
       const savedUrl = localStorage.getItem(STORAGE_URL_KEY) || '';
       const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY) || '';
@@ -508,17 +546,23 @@
 
     function renderTable() {
       const body = document.getElementById('ledger-table-body');
+      const mobileCards = document.getElementById('ledger-mobile-cards');
       const empty = document.getElementById('table-empty-msg');
-      if (!body) return;
+      if (!body || !mobileCards) return;
+
       const rows = getFilteredRecords();
       document.getElementById('visible-count').textContent = rows.length.toLocaleString();
+
       if (!rows.length) {
         body.innerHTML = '';
+        mobileCards.innerHTML = '';
         empty.classList.remove('hidden');
         return;
       }
+
       empty.classList.add('hidden');
       const isAdmin = currentRole === 'admin';
+
       body.innerHTML = rows.map(function(r, index) {
         const actions = isAdmin
           ? '<div class="flex items-center justify-center gap-2 no-print"><button class="icon-action edit" title="Edit" aria-label="Edit" data-action="edit" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-pen-to-square"></i></button><button class="icon-action delete" title="Delete" aria-label="Delete" data-action="delete" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-trash-can"></i></button></div>'
@@ -538,6 +582,44 @@
           '<td>' + escapeHtml(r.panu || '-') + '</td>' +
           '<td>' + escapeHtml(r.pasu || '-') + '</td>' +
           '<td class="no-print">' + actions + '</td></tr>';
+      }).join('');
+
+      mobileCards.innerHTML = rows.map(function(r, index) {
+        const mobileActions = isAdmin
+          ? '<div class="mobile-record-actions no-print">' +
+              '<button class="icon-action edit" title="දත්ත සංස්කරණය" aria-label="දත්ත සංස්කරණය" data-action="edit" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-pen-to-square"></i><span class="sr-only">Edit</span></button>' +
+              '<button class="icon-action delete" title="දත්ත මකන්න" aria-label="දත්ත මකන්න" data-action="delete" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-trash-can"></i><span class="sr-only">Delete</span></button>' +
+            '</div>'
+          : '<div class="mobile-record-actions no-print"><span class="text-xs text-slate-500">දත්ත බැලීම පමණි</span></div>';
+
+        function detail(label, value) {
+          return '<div class="mobile-record-detail"><span class="mobile-record-detail-label">' + label + '</span><strong class="mobile-record-detail-value">' + escapeHtml(value || '-') + '</strong></div>';
+        }
+
+        return '<article class="mobile-record-card">' +
+          '<div class="flex items-start justify-between gap-3">' +
+            '<div class="min-w-0 flex-1">' +
+              '<p class="text-[.65rem] text-slate-500 font-semibold">සටහන #' + (index + 1) + ' · ' + escapeHtml(r.date || '-') + '</p>' +
+              '<h3 class="mobile-record-title mt-1">' + escapeHtml(r.item || 'නමක් සඳහන් නැත') + '</h3>' +
+              '<span class="mobile-record-ledger">' + escapeHtml(r.ledger || '-') + '</span>' +
+            '</div>' +
+            '<span class="shrink-0 rounded-lg border border-slate-700 bg-slate-950/70 px-2 py-1 text-[.65rem] text-slate-400">' + (index + 1) + '</span>' +
+          '</div>' +
+          '<div class="mobile-record-stats">' +
+            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">මුළු ප්‍රමාණය</span><strong class="mobile-record-stat-value text-white">' + Number(r.totalQty || 0).toLocaleString() + '</strong></div>' +
+            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">නිකුත් ප්‍රමාණය</span><strong class="mobile-record-stat-value text-rose-300">' + Number(r.issuedQty || 0).toLocaleString() + '</strong></div>' +
+            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">ගබඩා ඉතිරිය</span><strong class="mobile-record-stat-value text-emerald-300">' + Number(r.balance || 0).toLocaleString() + '</strong></div>' +
+          '</div>' +
+          '<div class="mobile-record-details">' +
+            detail('නිකුත් කළ / ඇතුළත් කළ ස්ථානය', r.location) +
+            detail('සීරියල් අංකය', r.serial) +
+            detail('නාමාවලි අංකය', r.catalog) +
+            detail('ස්ථාවර වත්කම් අංකය', r.asset) +
+            detail('පානු (PA / NU)', r.panu) +
+            detail('පාසු (PA / SU)', r.pasu) +
+          '</div>' +
+          mobileActions +
+        '</article>';
       }).join('');
     }
 
