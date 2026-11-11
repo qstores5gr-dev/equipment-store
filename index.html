@@ -196,7 +196,7 @@
           <button onclick="switchSection('dashboard')" class="rounded-lg bg-slate-800 hover:bg-slate-700 px-4 py-2 text-sm"><i class="fa-solid fa-arrow-left mr-2"></i>ආපසු</button>
         </div>
 
-        <form id="store-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <form id="store-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" autocomplete="off">
           <div><label class="field-label" for="field-date">දිනය *</label><input class="field" type="date" id="field-date" required /></div>
           <div><label class="field-label" for="field-ledger">ලෙජරය *</label><select class="field" id="field-ledger" required></select></div>
           <div><label class="field-label" for="field-item">අයිතමය *</label><input class="field" type="text" id="field-item" list="item-suggestions" placeholder="උදා: ඇඳන්" required /><datalist id="item-suggestions"><option value="ඇඳන්"></option><option value="ඇඳ ඇතිරිලි සුදු"></option><option value="කොට්ට උර"></option><option value="පුටු ප්ලාස්ටික්"></option><option value="මේස ලී"></option></datalist></div>
@@ -207,8 +207,8 @@
           <div><label class="field-label" for="field-location">නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය *</label><input class="field" type="text" id="field-location" list="location-suggestions" placeholder="උදා: ජන අවන්හල / උපකරණ ගබඩාව" required /><datalist id="location-suggestions"><option value="ජන අවන්හල"></option><option value="බැරැක්කය"></option><option value="උපකරණ ගබඩාව"></option></datalist></div>
           <div><label class="field-label" for="field-total-qty">මුළු ප්‍රමාණය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-total-qty" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">එකම භාණ්ඩ කාණ්ඩයේ සියලුම ඇතුළත් කිරීම්වල එකතුව.</p></div>
           <div><label class="field-label" for="field-balance">ගබඩාවේ ඉතිරිය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-balance" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">“උපකරණ ගබඩාව” ස්ථානයට ඇතුළත් කළ ප්‍රමාණවල එකතුව.</p></div>
-          <div><label class="field-label" for="field-panu">පානු (PA / NU)</label><input class="field" type="text" id="field-panu" placeholder="ලැබීම් / නිකුත් කිරීම් යොමු අංකය" /></div>
-          <div><label class="field-label" for="field-pasu">පාසු (PA / SU)</label><input class="field" type="text" id="field-pasu" placeholder="අතිරේක යොමු අංකය" /></div>
+          <div><label class="field-label" for="field-panu">පානු (PA / NU)</label><input class="field" type="text" id="field-panu" placeholder="ලැබීම් / නිකුත් කිරීම් යොමු අංකය" autocomplete="off" autocapitalize="off" spellcheck="false" /></div>
+          <div><label class="field-label" for="field-pasu">පාසු (PA / SU)</label><input class="field" type="text" id="field-pasu" placeholder="අතිරේක යොමු අංකය" autocomplete="off" autocapitalize="off" spellcheck="false" /></div>
 
           <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-gold-500/20 bg-gold-500/5 p-4 text-xs text-slate-300 leading-6">
             <i class="fa-solid fa-circle-info text-gold-400 mr-2"></i>
@@ -757,6 +757,9 @@
       document.getElementById('field-date').value = todayLocal();
       document.getElementById('field-ledger').value = ledger || LEDGERS[0];
       document.getElementById('field-issued-qty').value = '0';
+      // Explicitly clear optional reference fields; do not carry values into a new record.
+      document.getElementById('field-panu').value = '';
+      document.getElementById('field-pasu').value = '';
       document.getElementById('form-title').textContent = 'නව දත්ත ඇතුළත් කිරීම';
       document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>සේව් කරන්න';
       calculatePreview();
@@ -817,6 +820,8 @@
         showToast(action === 'add' ? 'දත්ත සාර්ථකව ඇතුළත් කළා.' : 'දත්ත වෙනස්කම් සුරැකුවා.');
         document.getElementById('store-form').reset();
         document.getElementById('field-date').value = todayLocal();
+        document.getElementById('field-panu').value = '';
+        document.getElementById('field-pasu').value = '';
         switchSection('ledger-view', false);
         document.getElementById('view-filter-ledger').value = record.ledger;
         document.getElementById('view-search-input').value = '';
