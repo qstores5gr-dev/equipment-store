@@ -48,9 +48,20 @@
     .group-toggle:hover { color:#facc15; }
     .group-detail-row td { padding:0 !important; background:rgba(2,6,23,.38); }
     .group-detail-panel { padding:1rem 1.1rem 1.1rem; border-top:1px solid rgba(212,175,55,.22); }
-    .group-detail-table { width:100%; border-collapse:collapse; min-width:620px; }
-    .group-detail-table th { padding:.65rem .7rem; color:#facc15; background:rgba(27,54,93,.72); font-size:.72rem; text-align:left; }
-    .group-detail-table td { padding:.7rem; border-bottom:1px solid rgba(148,163,184,.12); color:#e2e8f0; font-size:.78rem; }
+    .group-detail-table { width:100%; border-collapse:separate; border-spacing:0; min-width:760px; table-layout:fixed; }
+    .group-detail-table th { padding:.7rem .8rem; color:#facc15; background:rgba(27,54,93,.82); font-size:.72rem; text-align:left; white-space:nowrap; }
+    .group-detail-table td { padding:.75rem .8rem; border-bottom:1px solid rgba(148,163,184,.16); border-right:1px solid rgba(148,163,184,.10); color:#e2e8f0; font-size:.78rem; vertical-align:middle; }
+    .group-detail-table th:nth-child(1), .group-detail-table td:nth-child(1) { width:14%; }
+    .group-detail-table th:nth-child(2), .group-detail-table td:nth-child(2) { width:30%; }
+    .group-detail-table th:nth-child(3), .group-detail-table td:nth-child(3),
+    .group-detail-table th:nth-child(4), .group-detail-table td:nth-child(4),
+    .group-detail-table th:nth-child(5), .group-detail-table td:nth-child(5) { width:12%; text-align:center; }
+    .group-detail-table th:nth-child(6), .group-detail-table td:nth-child(6) { width:20%; text-align:center; border-right:0; }
+    .group-detail-table td:nth-child(3), .group-detail-table td:nth-child(4), .group-detail-table td:nth-child(5) { font-variant-numeric:tabular-nums; }
+    .detail-value-chip { display:inline-flex; min-width:2.25rem; min-height:1.9rem; align-items:center; justify-content:center; padding:.2rem .55rem; border:1px solid rgba(148,163,184,.22); border-radius:.55rem; background:rgba(2,6,23,.42); font-weight:800; letter-spacing:.02em; white-space:nowrap; }
+    .detail-value-chip.quantity { color:#fda4af; border-color:rgba(251,113,133,.24); }
+    .detail-value-chip.panu { color:#facc15; border-color:rgba(250,204,21,.24); }
+    .detail-value-chip.pasu { color:#6ee7b7; border-color:rgba(52,211,153,.24); }
     .group-detail-table tr:last-child td { border-bottom:0; }
     .mobile-item-group { min-width:0; padding:1rem; border:1px solid rgba(212,175,55,.32); border-radius:1rem; background:linear-gradient(150deg,rgba(27,54,93,.92),rgba(11,20,37,.98)); box-shadow:0 8px 24px rgba(0,0,0,.18); }
     .mobile-group-trigger { width:100%; min-width:0; display:block; text-align:left; }
@@ -615,9 +626,9 @@
         return '<tr>' +
           '<td class="whitespace-nowrap">' + escapeHtml(record.date || '-') + '</td>' +
           '<td class="font-semibold text-slate-100">' + escapeHtml(record.location || '-') + '</td>' +
-          '<td class="text-right font-bold text-rose-300">' + Number(record.issuedQty || 0).toLocaleString() + '</td>' +
-          '<td>' + escapeHtml(record.panu || '-') + '</td>' +
-          '<td>' + escapeHtml(record.pasu || '-') + '</td>' +
+          '<td class="text-center"><span class="detail-value-chip quantity">' + Number(record.issuedQty || 0).toLocaleString() + '</span></td>' +
+          '<td class="text-center"><span class="detail-value-chip panu">' + escapeHtml(record.panu || '-') + '</span></td>' +
+          '<td class="text-center"><span class="detail-value-chip pasu">' + escapeHtml(record.pasu || '-') + '</span></td>' +
           '<td>' + renderRecordActions(record, isAdmin) + '</td>' +
         '</tr>';
       }).join('');
