@@ -42,6 +42,21 @@
     .data-table td { padding:.75rem; border-bottom:1px solid rgba(148,163,184,.12); font-size:.82rem; vertical-align:middle; }
     .data-table tbody tr:hover { background:rgba(255,255,255,.035); }
     .mobile-record-list { display:none; }
+    .group-summary-row { cursor:pointer; }
+    .group-summary-row:hover { background:rgba(250,204,21,.055) !important; }
+    .group-toggle { display:inline-flex; align-items:center; gap:.55rem; color:#f8fafc; font-weight:700; text-align:left; }
+    .group-toggle:hover { color:#facc15; }
+    .group-detail-row td { padding:0 !important; background:rgba(2,6,23,.38); }
+    .group-detail-panel { padding:1rem 1.1rem 1.1rem; border-top:1px solid rgba(212,175,55,.22); }
+    .group-detail-table { width:100%; border-collapse:collapse; min-width:620px; }
+    .group-detail-table th { padding:.65rem .7rem; color:#facc15; background:rgba(27,54,93,.72); font-size:.72rem; text-align:left; }
+    .group-detail-table td { padding:.7rem; border-bottom:1px solid rgba(148,163,184,.12); color:#e2e8f0; font-size:.78rem; }
+    .group-detail-table tr:last-child td { border-bottom:0; }
+    .mobile-item-group { min-width:0; padding:1rem; border:1px solid rgba(212,175,55,.32); border-radius:1rem; background:linear-gradient(150deg,rgba(27,54,93,.92),rgba(11,20,37,.98)); box-shadow:0 8px 24px rgba(0,0,0,.18); }
+    .mobile-group-trigger { width:100%; min-width:0; display:block; text-align:left; }
+    .mobile-group-details { display:grid; gap:.7rem; margin-top:.9rem; padding-top:.9rem; border-top:1px solid rgba(212,175,55,.22); }
+    .mobile-issue-card { min-width:0; padding:.8rem; border:1px solid rgba(148,163,184,.16); border-radius:.8rem; background:rgba(2,6,23,.36); }
+    .mobile-issue-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; margin-top:.55rem; }
     .mobile-record-card { min-width:0; padding:1rem; border:1px solid rgba(212,175,55,.28); border-radius:1rem; background:linear-gradient(150deg,rgba(27,54,93,.88),rgba(11,20,37,.98)); box-shadow:0 8px 24px rgba(0,0,0,.18); }
     .mobile-record-title { overflow-wrap:anywhere; font-size:1.05rem; line-height:1.5; font-weight:800; color:#f8fafc; }
     .mobile-record-ledger { display:inline-flex; max-width:100%; margin-top:.35rem; padding:.25rem .55rem; border:1px solid rgba(212,175,55,.28); border-radius:999px; background:rgba(212,175,55,.09); color:#facc15; font-size:.69rem; line-height:1.4; overflow-wrap:anywhere; }
@@ -221,20 +236,20 @@
         <div class="grid grid-cols-1 md:grid-cols-[minmax(220px,1fr)_minmax(240px,2fr)_auto] gap-3 mt-5 no-print">
           <select id="view-filter-ledger" class="field" aria-label="ලෙජරය අනුව පෙරහන්"><option value="ALL">සියලුම ලෙජර්</option></select>
           <input id="view-search-input" class="field" type="search" placeholder="අයිතමය / සීරියල් / ස්ථානය සොයන්න..." />
-          <div class="rounded-xl bg-slate-950 border border-slate-700 px-4 py-3 text-sm"><span class="text-slate-400">පෙන්වන සටහන්: </span><b id="visible-count" class="text-gold-300">0</b></div>
+          <div class="rounded-xl bg-slate-950 border border-slate-700 px-4 py-3 text-sm"><span class="text-slate-400">පෙන්වන අයිතම: </span><b id="visible-count" class="text-gold-300">0</b></div>
         </div>
       </div>
       <div class="glass rounded-2xl overflow-hidden">
         <div class="table-wrap">
           <table class="data-table">
             <thead><tr>
-              <th>#</th><th>දිනය</th><th>ලෙජරය</th><th>අයිතමය</th><th>සීරියල් අංකය</th><th>නාමාවලි අංකය</th><th>වත්කම් අංකය</th><th>මුළු ප්‍රමාණය</th><th>නිකුත් ප්‍රමාණය</th><th>ගබඩා ඉතිරිය</th><th>ස්ථානය</th><th>පානු</th><th>පාසු</th><th class="no-print">ක්‍රියාමාර්ග</th>
+              <th>#</th><th>අයිතමය</th><th>ලෙජරය</th><th>නාමාවලි අංකය</th><th>සීරියල් අංකය</th><th>වත්කම් අංකය</th><th>මුළු ප්‍රමාණය</th><th>ගබඩාවේ ඉතිරිය</th><th>සටහන්</th><th>විස්තර</th>
             </tr></thead>
             <tbody id="ledger-table-body"></tbody>
           </table>
         </div>
         <div id="ledger-mobile-cards" class="mobile-record-list" aria-live="polite"></div>
-        <div id="table-empty-msg" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-inbox text-4xl mb-3"></i><p>පෙන්වීමට දත්ත නොමැත.</p></div>
+        <div id="table-empty-msg" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-inbox text-4xl mb-3"></i><p>පෙන්වීමට අයිතම නොමැත.</p></div>
       </div>
     </section>
 
@@ -277,6 +292,7 @@
     let editingRecordId = null;
     let activeSection = 'dashboard';
     let toastTimer = null;
+    const expandedItemGroups = new Set();
 
     document.addEventListener('DOMContentLoaded', initializeApp);
 
@@ -544,16 +560,111 @@
       });
     }
 
+    function getGroupedRecords() {
+      const matchingRecords = getFilteredRecords();
+      if (!matchingRecords.length) return [];
+
+      // Search/filter identifies the matching item groups. Once a group matches,
+      // show every location/transaction belonging to that same inventory item.
+      const matchingKeys = new Set(matchingRecords.map(recordGroupKey));
+      const groups = new Map();
+      storeData.forEach(function(record) {
+        const key = recordGroupKey(record);
+        if (!matchingKeys.has(key)) return;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            key: key,
+            ledger: record.ledger || '',
+            item: record.item || '',
+            serial: record.serial || '',
+            catalog: record.catalog || '',
+            asset: record.asset || '',
+            records: []
+          });
+        }
+        groups.get(key).records.push(record);
+      });
+
+      return Array.from(groups.values()).map(function(group) {
+        group.totalQty = group.records.reduce(function(sum, record) {
+          return sum + (Number(record.issuedQty) || 0);
+        }, 0);
+        group.storeBalance = group.records.reduce(function(sum, record) {
+          return sum + (normalizeKey(record.location) === normalizeKey(STORE_LOCATION)
+            ? (Number(record.issuedQty) || 0) : 0);
+        }, 0);
+        group.locationCount = new Set(group.records.map(function(record) {
+          return normalizeKey(record.location);
+        }).filter(Boolean)).size;
+        return group;
+      }).sort(function(a, b) {
+        return String(a.item).localeCompare(String(b.item), 'si');
+      });
+    }
+
+    function renderRecordActions(record, isAdmin) {
+      if (!isAdmin) return '<span class="text-slate-500 text-xs no-print">බැලීම පමණි</span>';
+      return '<div class="flex items-center gap-2 no-print">' +
+        '<button class="icon-action edit" title="දත්ත සංස්කරණය" aria-label="දත්ත සංස්කරණය" data-action="edit" data-id="' + escapeHtml(record.id) + '"><i class="fa-solid fa-pen-to-square"></i></button>' +
+        '<button class="icon-action delete" title="දත්ත මකන්න" aria-label="දත්ත මකන්න" data-action="delete" data-id="' + escapeHtml(record.id) + '"><i class="fa-solid fa-trash-can"></i></button>' +
+      '</div>';
+    }
+
+    function renderDesktopGroupDetails(group, isAdmin) {
+      const detailRows = group.records.map(function(record) {
+        return '<tr>' +
+          '<td class="whitespace-nowrap">' + escapeHtml(record.date || '-') + '</td>' +
+          '<td class="font-semibold text-slate-100">' + escapeHtml(record.location || '-') + '</td>' +
+          '<td class="text-right font-bold text-rose-300">' + Number(record.issuedQty || 0).toLocaleString() + '</td>' +
+          '<td>' + escapeHtml(record.panu || '-') + '</td>' +
+          '<td>' + escapeHtml(record.pasu || '-') + '</td>' +
+          '<td>' + renderRecordActions(record, isAdmin) + '</td>' +
+        '</tr>';
+      }).join('');
+
+      return '<tr class="group-detail-row"><td colspan="10">' +
+        '<div class="group-detail-panel">' +
+          '<div class="flex flex-wrap items-center justify-between gap-2 mb-3">' +
+            '<div><p class="text-sm font-bold text-gold-300">' + escapeHtml(group.item) + ' · ස්ථාන අනුව විස්තර</p>' +
+            '<p class="text-xs text-slate-400 mt-1">මුළු ප්‍රමාණය: ' + group.totalQty.toLocaleString() + ' · ගබඩාවේ ඉතිරිය: ' + group.storeBalance.toLocaleString() + '</p></div>' +
+            '<span class="text-xs text-slate-400">සටහන් ' + group.records.length.toLocaleString() + '</span>' +
+          '</div>' +
+          '<div class="overflow-x-auto"><table class="group-detail-table"><thead><tr>' +
+            '<th>දිනය</th><th>නිකුත් කර ඇති ස්ථානය</th><th>ප්‍රමාණය</th><th>පානු</th><th>පාසු</th><th class="no-print">ක්‍රියාමාර්ග</th>' +
+          '</tr></thead><tbody>' + detailRows + '</tbody></table></div>' +
+        '</div>' +
+      '</td></tr>';
+    }
+
+    function renderMobileGroupDetails(group, isAdmin) {
+      return '<div class="mobile-group-details">' +
+        '<div class="flex items-center justify-between gap-2"><p class="text-sm font-bold text-gold-300">ස්ථාන අනුව විස්තර</p>' +
+          '<span class="text-xs text-slate-400">' + group.records.length.toLocaleString() + ' සටහන්</span></div>' +
+        group.records.map(function(record) {
+          return '<div class="mobile-issue-card">' +
+            '<div class="flex items-start justify-between gap-2"><div class="min-w-0"><p class="text-xs text-slate-400">' + escapeHtml(record.date || '-') + '</p>' +
+              '<h4 class="font-bold text-slate-100 mt-1 break-words">' + escapeHtml(record.location || '-') + '</h4></div>' +
+              '<span class="shrink-0 rounded-lg bg-rose-500/10 border border-rose-400/20 text-rose-300 px-2 py-1 text-sm font-extrabold">' + Number(record.issuedQty || 0).toLocaleString() + '</span></div>' +
+            '<div class="mobile-issue-grid">' +
+              '<div><span class="mobile-record-detail-label">පානු (PA / NU)</span><strong class="mobile-record-detail-value">' + escapeHtml(record.panu || '-') + '</strong></div>' +
+              '<div><span class="mobile-record-detail-label">පාසු (PA / SU)</span><strong class="mobile-record-detail-value">' + escapeHtml(record.pasu || '-') + '</strong></div>' +
+            '</div>' +
+            '<div class="mobile-record-actions">' + renderRecordActions(record, isAdmin) + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
     function renderTable() {
       const body = document.getElementById('ledger-table-body');
       const mobileCards = document.getElementById('ledger-mobile-cards');
       const empty = document.getElementById('table-empty-msg');
       if (!body || !mobileCards) return;
 
-      const rows = getFilteredRecords();
-      document.getElementById('visible-count').textContent = rows.length.toLocaleString();
+      const groups = getGroupedRecords();
+      document.getElementById('visible-count').textContent = groups.length.toLocaleString();
 
-      if (!rows.length) {
+      if (!groups.length) {
         body.innerHTML = '';
         mobileCards.innerHTML = '';
         empty.classList.remove('hidden');
@@ -563,62 +674,47 @@
       empty.classList.add('hidden');
       const isAdmin = currentRole === 'admin';
 
-      body.innerHTML = rows.map(function(r, index) {
-        const actions = isAdmin
-          ? '<div class="flex items-center justify-center gap-2 no-print"><button class="icon-action edit" title="Edit" aria-label="Edit" data-action="edit" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-pen-to-square"></i></button><button class="icon-action delete" title="Delete" aria-label="Delete" data-action="delete" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-trash-can"></i></button></div>'
-          : '<span class="text-slate-600 text-xs no-print">View only</span>';
-        return '<tr>' +
+      body.innerHTML = groups.map(function(group, index) {
+        const expanded = expandedItemGroups.has(group.key);
+        const encodedKey = encodeURIComponent(group.key);
+        const toggleLabel = expanded ? 'විස්තර සඟවන්න' : 'ස්ථාන අනුව විස්තර බලන්න';
+        const summary = '<tr class="group-summary-row">' +
           '<td class="text-slate-500">' + (index + 1) + '</td>' +
-          '<td class="whitespace-nowrap">' + escapeHtml(r.date) + '</td>' +
-          '<td class="text-gold-300 whitespace-nowrap">' + escapeHtml(r.ledger) + '</td>' +
-          '<td class="font-semibold text-slate-100">' + escapeHtml(r.item) + '</td>' +
-          '<td>' + escapeHtml(r.serial || '-') + '</td>' +
-          '<td>' + escapeHtml(r.catalog || '-') + '</td>' +
-          '<td>' + escapeHtml(r.asset || '-') + '</td>' +
-          '<td class="text-center font-bold">' + Number(r.totalQty || 0).toLocaleString() + '</td>' +
-          '<td class="text-center font-bold text-rose-300">' + Number(r.issuedQty || 0).toLocaleString() + '</td>' +
-          '<td class="text-center font-bold text-emerald-300">' + Number(r.balance || 0).toLocaleString() + '</td>' +
-          '<td>' + escapeHtml(r.location || '-') + '</td>' +
-          '<td>' + escapeHtml(r.panu || '-') + '</td>' +
-          '<td>' + escapeHtml(r.pasu || '-') + '</td>' +
-          '<td class="no-print">' + actions + '</td></tr>';
+          '<td><button type="button" class="group-toggle" data-action="toggle-group" data-group-key="' + escapeHtml(encodedKey) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' +
+            '<i class="fa-solid ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right') + ' text-gold-400 text-xs"></i>' +
+            '<span>' + escapeHtml(group.item || 'නමක් සඳහන් නැත') + '</span></button></td>' +
+          '<td class="text-gold-300">' + escapeHtml(group.ledger || '-') + '</td>' +
+          '<td>' + escapeHtml(group.catalog || '-') + '</td>' +
+          '<td>' + escapeHtml(group.serial || '-') + '</td>' +
+          '<td>' + escapeHtml(group.asset || '-') + '</td>' +
+          '<td class="text-center font-extrabold text-white">' + group.totalQty.toLocaleString() + '</td>' +
+          '<td class="text-center font-extrabold text-emerald-300">' + group.storeBalance.toLocaleString() + '</td>' +
+          '<td class="text-center">' + group.records.length.toLocaleString() + '</td>' +
+          '<td><button type="button" class="text-xs text-gold-300 hover:text-yellow-200 whitespace-nowrap" data-action="toggle-group" data-group-key="' + escapeHtml(encodedKey) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' +
+            '<i class="fa-solid ' + (expanded ? 'fa-chevron-up' : 'fa-eye') + ' mr-1"></i>' + toggleLabel + '</button></td>' +
+        '</tr>';
+        return summary + (expanded ? renderDesktopGroupDetails(group, isAdmin) : '');
       }).join('');
 
-      mobileCards.innerHTML = rows.map(function(r, index) {
-        const mobileActions = isAdmin
-          ? '<div class="mobile-record-actions no-print">' +
-              '<button class="icon-action edit" title="දත්ත සංස්කරණය" aria-label="දත්ත සංස්කරණය" data-action="edit" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-pen-to-square"></i><span class="sr-only">Edit</span></button>' +
-              '<button class="icon-action delete" title="දත්ත මකන්න" aria-label="දත්ත මකන්න" data-action="delete" data-id="' + escapeHtml(r.id) + '"><i class="fa-solid fa-trash-can"></i><span class="sr-only">Delete</span></button>' +
-            '</div>'
-          : '<div class="mobile-record-actions no-print"><span class="text-xs text-slate-500">දත්ත බැලීම පමණි</span></div>';
-
-        function detail(label, value) {
-          return '<div class="mobile-record-detail"><span class="mobile-record-detail-label">' + label + '</span><strong class="mobile-record-detail-value">' + escapeHtml(value || '-') + '</strong></div>';
-        }
-
-        return '<article class="mobile-record-card">' +
-          '<div class="flex items-start justify-between gap-3">' +
-            '<div class="min-w-0 flex-1">' +
-              '<p class="text-[.65rem] text-slate-500 font-semibold">සටහන #' + (index + 1) + ' · ' + escapeHtml(r.date || '-') + '</p>' +
-              '<h3 class="mobile-record-title mt-1">' + escapeHtml(r.item || 'නමක් සඳහන් නැත') + '</h3>' +
-              '<span class="mobile-record-ledger">' + escapeHtml(r.ledger || '-') + '</span>' +
+      mobileCards.innerHTML = groups.map(function(group, index) {
+        const expanded = expandedItemGroups.has(group.key);
+        const encodedKey = encodeURIComponent(group.key);
+        return '<article class="mobile-item-group">' +
+          '<button type="button" class="mobile-group-trigger" data-action="toggle-group" data-group-key="' + escapeHtml(encodedKey) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<div class="min-w-0 flex-1"><p class="text-[.65rem] text-slate-400 font-semibold">අයිතමය #' + (index + 1) + ' · ' + escapeHtml(group.ledger || '-') + '</p>' +
+                '<h3 class="mobile-record-title mt-1">' + escapeHtml(group.item || 'නමක් සඳහන් නැත') + '</h3>' +
+                '<p class="text-xs text-slate-400 mt-1">නාමාවලි අංකය: ' + escapeHtml(group.catalog || '-') + '</p></div>' +
+              '<span class="shrink-0 rounded-lg bg-slate-950/70 border border-gold-500/30 px-2.5 py-1 text-sm font-bold text-gold-300">' + group.totalQty.toLocaleString() + '</span>' +
             '</div>' +
-            '<span class="shrink-0 rounded-lg border border-slate-700 bg-slate-950/70 px-2 py-1 text-[.65rem] text-slate-400">' + (index + 1) + '</span>' +
-          '</div>' +
-          '<div class="mobile-record-stats">' +
-            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">මුළු ප්‍රමාණය</span><strong class="mobile-record-stat-value text-white">' + Number(r.totalQty || 0).toLocaleString() + '</strong></div>' +
-            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">නිකුත් ප්‍රමාණය</span><strong class="mobile-record-stat-value text-rose-300">' + Number(r.issuedQty || 0).toLocaleString() + '</strong></div>' +
-            '<div class="mobile-record-stat"><span class="mobile-record-stat-label">ගබඩා ඉතිරිය</span><strong class="mobile-record-stat-value text-emerald-300">' + Number(r.balance || 0).toLocaleString() + '</strong></div>' +
-          '</div>' +
-          '<div class="mobile-record-details">' +
-            detail('නිකුත් කළ / ඇතුළත් කළ ස්ථානය', r.location) +
-            detail('සීරියල් අංකය', r.serial) +
-            detail('නාමාවලි අංකය', r.catalog) +
-            detail('ස්ථාවර වත්කම් අංකය', r.asset) +
-            detail('පානු (PA / NU)', r.panu) +
-            detail('පාසු (PA / SU)', r.pasu) +
-          '</div>' +
-          mobileActions +
+            '<div class="mobile-record-stats">' +
+              '<div class="mobile-record-stat"><span class="mobile-record-stat-label">මුළු ප්‍රමාණය</span><strong class="mobile-record-stat-value text-white">' + group.totalQty.toLocaleString() + '</strong></div>' +
+              '<div class="mobile-record-stat"><span class="mobile-record-stat-label">ගබඩා ඉතිරිය</span><strong class="mobile-record-stat-value text-emerald-300">' + group.storeBalance.toLocaleString() + '</strong></div>' +
+              '<div class="mobile-record-stat"><span class="mobile-record-stat-label">සටහන්</span><strong class="mobile-record-stat-value text-gold-300">' + group.records.length.toLocaleString() + '</strong></div>' +
+            '</div>' +
+            '<div class="flex items-center justify-between gap-2 mt-3 text-xs text-gold-300"><span>' + (expanded ? 'විස්තර සඟවන්න' : 'ස්ථාන අනුව විස්තර බලන්න') + '</span><i class="fa-solid ' + (expanded ? 'fa-chevron-up' : 'fa-chevron-down') + '"></i></div>' +
+          '</button>' +
+          (expanded ? renderMobileGroupDetails(group, isAdmin) : '') +
         '</article>';
       }).join('');
     }
@@ -765,9 +861,19 @@
     async function handleTableAction(event) {
       const button = event.target.closest('button[data-action]');
       if (!button) return;
+      const action = button.dataset.action;
+      if (action === 'toggle-group') {
+        let key = '';
+        try { key = decodeURIComponent(button.dataset.groupKey || ''); } catch (ignore) {}
+        if (!key) return;
+        if (expandedItemGroups.has(key)) expandedItemGroups.delete(key);
+        else expandedItemGroups.add(key);
+        renderTable();
+        return;
+      }
       const id = button.dataset.id;
-      if (button.dataset.action === 'edit') editRecord(id);
-      if (button.dataset.action === 'delete') await deleteRecord(id);
+      if (action === 'edit') editRecord(id);
+      if (action === 'delete') await deleteRecord(id);
     }
 
     async function deleteRecord(id) {
