@@ -171,7 +171,7 @@
         </div>
         <div class="stat-card rounded-2xl p-4 sm:p-5">
           <div class="flex justify-between items-center text-slate-300 text-xs sm:text-sm"><span>ලෙජර් වර්ග</span><i class="fa-solid fa-book-open text-gold-400 text-lg"></i></div>
-          <p id="stat-ledgers" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">9</p>
+          <p id="stat-ledgers" class="text-3xl sm:text-4xl font-extrabold mt-3 tabular-nums">10</p>
           <p class="text-xs text-slate-400 mt-1">පද්ධතියේ ලෙජර්</p>
         </div>
         <div class="stat-card rounded-2xl p-4 sm:p-5">
@@ -295,7 +295,8 @@
       'යාන්ත්‍රික ප්‍රවාහන ලෙජරය',
       'සිතියම් ලෙජරය',
       'පවිත්‍රතා/ක්‍ෂය ද්‍රව්‍ය ලෙජරය',
-      'ඒකක දේපල ලෙජරය'
+      'ඒකක දේපල ලෙජරය',
+      'පරිත්‍යාග ලෙජරය'
     ];
     const STORE_LOCATION = 'උපකරණ ගබඩාව';
     const STORAGE_URL_KEY = 'gajaba_inventory_webhook_url_v2';
@@ -638,7 +639,7 @@
       const container = document.getElementById('ledger-cards');
       container.innerHTML = LEDGERS.map(function(ledger, index) {
         const count = storeData.filter(function(r) { return r.ledger === ledger; }).length;
-        const icons = ['fa-bed','fa-clipboard-check','fa-boxes-stacked','fa-walkie-talkie','fa-volleyball','fa-truck','fa-map-location-dot','fa-broom','fa-building-shield'];
+        const icons = ['fa-bed','fa-clipboard-check','fa-boxes-stacked','fa-walkie-talkie','fa-volleyball','fa-truck','fa-map-location-dot','fa-broom','fa-building-shield','fa-hand-holding-heart'];
         return '<button class="ledger-card rounded-2xl p-5 text-left" onclick="openLedgerFilter(' + index + ')">' +
           '<div class="flex items-start justify-between gap-3"><div class="h-12 w-12 rounded-xl bg-gold-500/15 text-gold-400 flex items-center justify-center text-xl"><i class="fa-solid ' + icons[index] + '"></i></div>' +
           '<span class="rounded-full bg-slate-950/60 border border-slate-500/30 px-3 py-1 text-xs text-slate-200">' + count + ' සටහන්</span></div>' +
@@ -660,7 +661,7 @@
       const uniqueItems = new Set(storeData.map(recordGroupKey));
       const activeLedgers = new Set(storeData.map(function(r) { return r.ledger; })).size;
       document.getElementById('stat-records').textContent = storeData.length.toLocaleString();
-      document.getElementById('stat-ledgers').textContent = activeLedgers.toLocaleString() + ' / 9';
+      document.getElementById('stat-ledgers').textContent = activeLedgers.toLocaleString() + ' / 10';
       document.getElementById('stat-today').textContent = todayCount.toLocaleString();
       document.getElementById('stat-items').textContent = uniqueItems.size.toLocaleString();
       renderLedgerCards();
