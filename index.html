@@ -35,6 +35,9 @@
     .field:focus { border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212,175,55,.12); }
     .field:disabled, .field[readonly] { opacity: .85; }
     .field-label { display:block; color:#cbd5e1; font-size:.875rem; font-weight:600; margin-bottom:.45rem; }
+    .history-suggestions { position:absolute; top:calc(100% + .35rem); left:0; right:0; z-index:60; max-height:15rem; overflow-y:auto; border:1px solid rgba(212,175,55,.42); border-radius:.75rem; background:#101f38; box-shadow:0 14px 32px rgba(0,0,0,.42); padding:.3rem; }
+    .history-suggestion { display:block; width:100%; padding:.65rem .75rem; border-radius:.5rem; color:#e2e8f0; text-align:left; font-size:.86rem; overflow-wrap:anywhere; }
+    .history-suggestion:hover, .history-suggestion:focus { background:rgba(212,175,55,.16); color:#facc15; outline:none; }
     .stat-card { background: linear-gradient(145deg,rgba(27,54,93,.95),rgba(15,30,54,.98)); border:1px solid rgba(212,175,55,.18); }
     .table-wrap { overflow-x:auto; }
     .data-table { width:100%; min-width:1120px; border-collapse:separate; border-spacing:0; }
@@ -210,12 +213,12 @@
         <form id="store-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" autocomplete="off">
           <div><label class="field-label" for="field-date">දිනය *</label><input class="field" type="date" id="field-date" required /></div>
           <div><label class="field-label" for="field-ledger">ලෙජරය *</label><select class="field" id="field-ledger" required></select></div>
-          <div><label class="field-label" for="field-item">අයිතමය *</label><input class="field" type="text" id="field-item" list="item-suggestions" placeholder="උදා: ඇඳන්" required /><datalist id="item-suggestions"><option value="ඇඳන්"></option><option value="ඇඳ ඇතිරිලි සුදු"></option><option value="කොට්ට උර"></option><option value="පුටු ප්ලාස්ටික්"></option><option value="මේස ලී"></option></datalist></div>
+          <div><label class="field-label" for="field-item">අයිතමය *</label><div class="relative"><input class="field" type="text" id="field-item" placeholder="උදා: ඇඳන්" autocomplete="off" required /><div id="item-history-menu" class="history-suggestions hidden" role="listbox" aria-label="කලින් ඇතුළත් කළ අයිතම"></div></div></div>
           <div><label class="field-label" for="field-serial">සීරියල් අංකය</label><input class="field" type="text" id="field-serial" placeholder="-නැත-" /></div>
           <div><label class="field-label" for="field-catalog">නාමාවලි අංකය</label><input class="field" type="text" id="field-catalog" placeholder="CAT/2026/01" /></div>
           <div><label class="field-label" for="field-asset">ස්ථාවර වත්කම් අංකය</label><input class="field" type="text" id="field-asset" placeholder="FA/GR/502" /></div>
           <div><label class="field-label" for="field-issued-qty">නිකුත් කිරීම් / ඇතුළත් කිරීම් ප්‍රමාණය *</label><input class="field" type="number" id="field-issued-qty" min="0" step="any" value="0" required /></div>
-          <div><label class="field-label" for="field-location">නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය *</label><input class="field" type="text" id="field-location" list="location-suggestions" placeholder="උදා: ජන අවන්හල / උපකරණ ගබඩාව" required /><datalist id="location-suggestions"><option value="ජන අවන්හල"></option><option value="බැරැක්කය"></option><option value="උපකරණ ගබඩාව"></option></datalist></div>
+          <div><label class="field-label" for="field-location">නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය *</label><div class="relative"><input class="field" type="text" id="field-location" placeholder="උදා: ජන අවන්හල / උපකරණ ගබඩාව" autocomplete="off" required /><div id="location-history-menu" class="history-suggestions hidden" role="listbox" aria-label="කලින් ඇතුළත් කළ ස්ථාන"></div></div></div>
           <div><label class="field-label" for="field-total-qty">මුළු ප්‍රමාණය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-total-qty" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">එකම භාණ්ඩ කාණ්ඩයේ සියලුම ඇතුළත් කිරීම්වල එකතුව.</p></div>
           <div><label class="field-label" for="field-balance">ගබඩාවේ ඉතිරිය (ස්වයංක්‍රීය)</label><input class="field border-emerald-700/70 text-emerald-300 font-bold" type="number" id="field-balance" readonly value="0" /><p class="text-[11px] text-slate-500 mt-1">“උපකරණ ගබඩාව” ස්ථානයට ඇතුළත් කළ ප්‍රමාණවල එකතුව.</p></div>
           <div><label class="field-label" for="field-panu">පානු (PA / NU)</label><input class="field" type="text" id="field-panu" placeholder="ලැබීම් / නිකුත් කිරීම් යොමු අංකය" autocomplete="off" autocapitalize="off" spellcheck="false" /></div>
@@ -317,6 +320,8 @@
         el.addEventListener('input', calculatePreview);
         el.addEventListener('change', calculatePreview);
       });
+      setupHistoryAutocomplete('field-item', 'item-history-menu', ['ඇඳන්','ඇඳ ඇතිරිලි සුදු','කොට්ට උර','පුටු ප්ලාස්ටික්','මේස ලී'], function(record) { return record.item; });
+      setupHistoryAutocomplete('field-location', 'location-history-menu', ['ජන අවන්හල','බැරැක්කය','උපකරණ ගබඩාව'], function(record) { return record.location; });
       document.getElementById('store-form').addEventListener('submit', handleFormSubmit);
       document.getElementById('view-filter-ledger').addEventListener('change', renderTable);
       document.getElementById('view-search-input').addEventListener('input', renderTable);
@@ -335,6 +340,87 @@
         setConnectionMessage('පළමුව Google Sheets URL සහ Access Token එක Settings පිටුවෙන් සකස් කරන්න.');
         switchSection('settings', false);
       }
+    }
+
+    function setupHistoryAutocomplete(inputId, menuId, defaults, valueGetter) {
+      const input = document.getElementById(inputId);
+      const menu = document.getElementById(menuId);
+      let activeIndex = -1;
+
+      function getValues() {
+        const values = defaults.concat(storeData.map(valueGetter));
+        const seen = new Set();
+        return values.map(function(value) { return String(value || '').trim(); }).filter(function(value) {
+          const key = normalizeKey(value);
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).sort(function(a, b) { return a.localeCompare(b, 'si'); });
+      }
+
+      function render() {
+        const query = normalizeKey(input.value);
+        const values = getValues().filter(function(value) {
+          return !query || normalizeKey(value).includes(query);
+        });
+        activeIndex = -1;
+        if (!values.length) {
+          menu.innerHTML = '<p class="px-3 py-3 text-xs text-slate-400">ගැළපෙන කලින් ඇතුළත් කළ දත්ත නැත. අලුතින් ටයිප් කරන්න.</p>';
+        } else {
+          menu.innerHTML = values.map(function(value, index) {
+            return '<button type="button" class="history-suggestion" role="option" data-history-index="' + index + '">' + escapeHtml(value) + '</button>';
+          }).join('');
+          menu.querySelectorAll('[data-history-index]').forEach(function(button) {
+            button.addEventListener('mousedown', function(event) {
+              event.preventDefault();
+              input.value = valueFromButton(button);
+              menu.classList.add('hidden');
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              input.focus();
+            });
+          });
+        }
+        menu.classList.remove('hidden');
+      }
+
+      function valueFromButton(button) { return button.textContent || ''; }
+      input.addEventListener('focus', render);
+      input.addEventListener('input', render);
+      input.addEventListener('keydown', function(event) {
+        const options = Array.from(menu.querySelectorAll('[data-history-index]'));
+        if (menu.classList.contains('hidden') || !options.length) {
+          if (event.key === 'ArrowDown') render();
+          return;
+        }
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          activeIndex = event.key === 'ArrowDown' ? Math.min(activeIndex + 1, options.length - 1) : Math.max(activeIndex - 1, 0);
+          options.forEach(function(option, index) {
+            option.classList.toggle('bg-yellow-500/10', index === activeIndex);
+            option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+          });
+        } else if (event.key === 'Enter' && activeIndex >= 0) {
+          event.preventDefault();
+          input.value = valueFromButton(options[activeIndex]);
+          menu.classList.add('hidden');
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (event.key === 'Escape') {
+          menu.classList.add('hidden');
+        }
+      });
+      document.addEventListener('click', function(event) {
+        if (!menu.parentElement.contains(event.target)) menu.classList.add('hidden');
+      });
+      input._refreshHistorySuggestions = render;
+    }
+
+    function refreshHistorySuggestions() {
+      ['field-item', 'field-location'].forEach(function(id) {
+        const input = document.getElementById(id);
+        if (input && input._refreshHistorySuggestions && !document.getElementById(id === 'field-item' ? 'item-history-menu' : 'location-history-menu').classList.contains('hidden')) {
+          input._refreshHistorySuggestions();
+        }
+      });
     }
 
     function populateLedgerSelectors() {
@@ -498,6 +584,7 @@
       try {
         const result = await apiGet('list', url, token);
         storeData = Array.isArray(result.records) ? result.records : [];
+        refreshHistorySuggestions();
         currentRole = result.role || currentRole;
         applyRoleUI();
         renderDashboard();
