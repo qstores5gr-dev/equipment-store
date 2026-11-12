@@ -322,6 +322,7 @@
       });
       setupHistoryAutocomplete('field-item', 'item-history-menu', ['ඇඳන්','ඇඳ ඇතිරිලි සුදු','කොට්ට උර','පුටු ප්ලාස්ටික්','මේස ලී'], function(record) { return record.item; });
       setupHistoryAutocomplete('field-location', 'location-history-menu', ['ජන අවන්හල','බැරැක්කය','උපකරණ ගබඩාව'], function(record) { return record.location; });
+      document.getElementById('field-item').addEventListener('input', autoFillCatalogFromItem);
       document.getElementById('store-form').addEventListener('submit', handleFormSubmit);
       document.getElementById('view-filter-ledger').addEventListener('change', renderTable);
       document.getElementById('view-search-input').addEventListener('input', renderTable);
@@ -412,6 +413,39 @@
         if (!menu.parentElement.contains(event.target)) menu.classList.add('hidden');
       });
       input._refreshHistorySuggestions = render;
+    }
+
+    // Auto-fill the catalogue number only when the typed item exactly matches a prior item.
+    // A manually edited catalogue number is preserved.
+    function autoFillCatalogFromItem() {
+      const itemInput = document.getElementById('field-item');
+      const catalogInput = document.getElementById('field-catalog');
+      const currentCatalog = catalogInput.value.trim();
+      const previousAutoValue = catalogInput.dataset.autofilledValue || '';
+
+      if (currentCatalog && currentCatalog !== previousAutoValue) return;
+
+      const itemKey = normalizeKey(itemInput.value);
+      if (!itemKey) {
+        if (previousAutoValue && currentCatalog === previousAutoValue) catalogInput.value = '';
+        delete catalogInput.dataset.autofilledValue;
+        return;
+      }
+
+      const matchingRecords = storeData.filter(function(record) {
+        return normalizeKey(record.item) === itemKey && String(record.catalog || '').trim();
+      }).sort(function(a, b) {
+        return String(b.date || '').localeCompare(String(a.date || ''));
+      });
+
+      if (matchingRecords.length) {
+        const catalogueNumber = String(matchingRecords[0].catalog).trim();
+        catalogInput.value = catalogueNumber;
+        catalogInput.dataset.autofilledValue = catalogueNumber;
+      } else {
+        if (previousAutoValue && currentCatalog === previousAutoValue) catalogInput.value = '';
+        delete catalogInput.dataset.autofilledValue;
+      }
     }
 
     function refreshHistorySuggestions() {
@@ -852,6 +886,7 @@
       if (currentRole !== 'admin') { showToast('දත්ත ඇතුළත් කිරීමට Admin access අවශ්‍යයි.', true); return; }
       editingRecordId = null;
       document.getElementById('store-form').reset();
+      delete document.getElementById('field-catalog').dataset.autofilledValue;
       document.getElementById('field-date').value = todayLocal();
       document.getElementById('field-ledger').value = ledger || LEDGERS[0];
       document.getElementById('field-issued-qty').value = '0';
