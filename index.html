@@ -113,6 +113,40 @@
       #table-empty-msg { padding:2rem 1rem; }
       .toast { right:.65rem; bottom:.65rem; max-width:calc(100vw - 1.3rem); }
     }
+    /* Q5 print workspace */
+    .q5-page { width:210mm; min-height:297mm; margin:10mm auto; padding:9mm 9mm 8mm; background:#fff; color:#111; box-shadow:0 4px 22px rgba(0,0,0,.22); display:flex; flex-direction:column; font-family:'Noto Sans Sinhala',Arial,sans-serif; }
+    .q5-header { display:grid; grid-template-columns:minmax(0,1fr) 32mm; gap:7mm; min-height:37mm; }
+    .q5-headrow { display:grid; grid-template-columns:48mm 4mm minmax(0,1fr); align-items:end; min-height:8mm; font-size:10pt; }
+    .q5-headrow .q5-value { min-width:0; border:0; border-bottom:1px dotted #222; border-radius:0; padding:0 2mm 1mm; color:#111; background:transparent; font:inherit; }
+    .q5-headrow input.q5-value { width:100%; }
+    .q5-code { font:10pt/1.45 Georgia,serif; }
+    .q5-table { width:100%; border-collapse:collapse; table-layout:fixed; color:#111; }
+    .q5-table th,.q5-table td { border:1px solid #222; text-align:center; padding:1mm .6mm; font-size:8pt; }
+    .q5-table thead .q5-group th { height:7mm; font-size:10pt; }
+    .q5-table thead .q5-english th { height:7mm; font:10pt Georgia,serif; }
+    .q5-table thead .q5-vertical th { height:48mm; vertical-align:bottom; }
+    .q5-vertical-label { writing-mode:vertical-rl; transform:rotate(180deg); display:inline-block; line-height:1.15; }
+    .q5-table tbody td { height:6.2mm; }
+    .q5-table tbody input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:#111; text-align:center; font:8pt 'Noto Sans Sinhala',Arial,sans-serif; padding:0; }
+    .q5-table tbody td:first-child input { text-align:left; }
+    .q5-footer { margin-top:auto; padding-top:7mm; color:#111; }
+    .q5-signatures { display:grid; grid-template-columns:1fr 1fr; gap:16mm; font-size:9pt; }
+    .q5-signature-space { height:17mm; border-bottom:1px dotted #222; width:78%; margin-top:8mm; }
+    .q5-page-number { text-align:center; font:9pt Arial,sans-serif; margin-top:4mm; }
+    .q5-date-line { border-bottom:1px dotted #222; padding:0 2mm 1mm; min-width:35mm; text-align:center; }
+    @media print {
+      @page { size:A4 portrait; margin:10mm 9mm; }
+      body.print-q5 { background:#fff !important; color:#111 !important; display:block !important; }
+      body.print-q5 header, body.print-q5 footer, body.print-q5 .no-print, body.print-q5 #toast { display:none !important; }
+      body.print-q5 main { display:block !important; max-width:none !important; padding:0 !important; margin:0 !important; }
+      body.print-q5 main > section:not(#section-print) { display:none !important; }
+      body.print-q5 #section-print { display:block !important; }
+      body.print-q5 #q5-pages { display:block !important; }
+      body.print-q5 .q5-page { width:auto !important; min-height:277mm !important; margin:0 !important; padding:0 !important; box-shadow:none !important; page-break-after:always; break-after:page; }
+      body.print-q5 .q5-page:last-child { page-break-after:auto; break-after:auto; }
+      body.print-q5 .q5-table th, body.print-q5 .q5-table td { color:#111 !important; background:#fff !important; }
+      body.print-q5 .q5-table input { color:#111 !important; }
+    }
     @media print {
       body { background:white !important;color:black !important; }
       header, footer, .no-print, #toast { display:none !important; }
@@ -139,6 +173,7 @@
         <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200 active" data-nav="dashboard" onclick="switchSection('dashboard')"><i class="fa-solid fa-house mr-2"></i>ප්‍රධාන මෙනුව</button>
         <button id="nav-entry" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="form" onclick="openNewRecord()"><i class="fa-solid fa-circle-plus mr-2"></i>දත්ත ඇතුළත් කිරීම</button>
         <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="ledger-view" onclick="switchSection('ledger-view')"><i class="fa-solid fa-table-list mr-2"></i>ලෙජර් දත්ත</button>
+        <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="print" onclick="switchSection('print')"><i class="fa-solid fa-print mr-2"></i>Q5 මුද්‍රණය</button>
         <button class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-200" data-nav="settings" onclick="switchSection('settings')"><i class="fa-solid fa-gear mr-2"></i>සැකසුම්</button>
       </nav>
     </div>
@@ -267,6 +302,32 @@
       </div>
     </section>
 
+    <!-- Q5 Print -->
+    <section id="section-print" class="hidden-section space-y-5">
+      <div class="glass rounded-2xl p-5 sm:p-7 no-print">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-4 mb-5">
+          <div><p class="text-gold-400 text-xs font-semibold">ARMY FORM Q 5</p><h2 class="text-2xl font-extrabold mt-1">Q5 මුද්‍රණ සැකසුම්</h2><p class="text-sm text-slate-400 mt-2">ලෙජරය සහ නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය තෝරා අදාළ සටහන් පමණක් ලබාගන්න.</p></div>
+          <button type="button" onclick="refreshData().then(function(ok){if(ok)renderQ5Preview();})" class="rounded-lg bg-slate-800 hover:bg-slate-700 px-4 py-2 text-sm"><i class="fa-solid fa-rotate mr-2"></i>දත්ත Refresh</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div><label class="field-label" for="q5-ledger">ලෙජරය තෝරන්න</label><select id="q5-ledger" class="field"><option value="">ලෙජරය තෝරන්න</option></select></div>
+          <div><label class="field-label" for="q5-location">නිකුත් කර ඇති / ඇතුළත් කළ ස්ථානය</label><select id="q5-location" class="field" disabled><option value="">පළමුව ලෙජරය තෝරන්න</option></select></div>
+          <div><label class="field-label" for="q5-print-date">මුද්‍රණ දිනය (වෙනස් කළ හැක)</label><input id="q5-print-date" class="field" type="date" /></div>
+          <div><label class="field-label" for="q5-unit-place">ස්ථානය / ඒකකය</label><input id="q5-unit-place" class="field" type="text" value="උපකරණ ගබඩාව - 5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව" /></div>
+          <div><label class="field-label" for="q5-holder">යුආඋ 05 පත දරන්නා</label><input id="q5-holder" class="field" type="text" placeholder="අවශ්‍ය නම් ඇතුළත් කරන්න" /></div>
+          <div><label class="field-label" for="q5-phone">දුරකථන අංකය</label><input id="q5-phone" class="field" type="text" placeholder="දුරකථන අංකය" /></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 mt-5">
+          <button type="button" onclick="renderQ5Preview()" class="gold-gradient rounded-xl px-5 py-3 font-bold"><i class="fa-solid fa-filter mr-2"></i>දත්ත ලබාගන්න</button>
+          <button type="button" onclick="printQ5()" class="rounded-xl bg-emerald-700 hover:bg-emerald-600 px-5 py-3 font-bold"><i class="fa-solid fa-print mr-2"></i>Print / Save as PDF</button>
+          <span id="q5-result-count" class="text-sm text-slate-300">ලෙජරය සහ ස්ථානය තෝරන්න.</span>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">සටහන: පිටුවකට පේළි 20 බැගින් බෙදේ. සෑම පිටුවකම භාරදීම් / භාරගැනීම් අත්සන් සහ Page අංකය පෙන්වයි. මුද්‍රණයට පෙර වගුවේ නාම හා ප්‍රමාණ කොටු සංස්කරණය කළ හැක.</p>
+      </div>
+      <div id="q5-empty" class="glass rounded-2xl p-8 text-center text-slate-400 no-print">Q5 වගුව පෙන්වීමට ලෙජරය සහ ස්ථානය තෝරන්න.</div>
+      <div id="q5-pages"></div>
+    </section>
+
     <!-- Settings -->
     <section id="section-settings" class="hidden-section">
       <div class="glass rounded-2xl p-5 sm:p-8 max-w-3xl mx-auto space-y-6">
@@ -308,11 +369,15 @@
     let activeSection = 'dashboard';
     let toastTimer = null;
     const expandedItemGroups = new Set();
+    let q5Rows = [];
+    let q5SelectedLedger = '';
+    let q5SelectedLocation = '';
 
     document.addEventListener('DOMContentLoaded', initializeApp);
 
     function initializeApp() {
       populateLedgerSelectors();
+      initializeQ5Controls();
       document.getElementById('field-date').value = todayLocal();
       document.getElementById('field-ledger').value = LEDGERS[0];
 
@@ -487,18 +552,19 @@
     }
 
     function switchSection(section, shouldRefresh) {
-      if (!['dashboard','form','ledger-view','settings'].includes(section)) return;
+      if (!['dashboard','form','ledger-view','print','settings'].includes(section)) return;
       activeSection = section;
-      ['dashboard','form','ledger-view','settings'].forEach(function(name) {
+      ['dashboard','form','ledger-view','print','settings'].forEach(function(name) {
         document.getElementById('section-' + name).classList.toggle('hidden-section', name !== section);
       });
       document.querySelectorAll('[data-nav]').forEach(function(button) {
         button.classList.toggle('active', button.dataset.nav === section || (section === 'form' && button.dataset.nav === 'form'));
       });
-      if (section === 'dashboard' || section === 'ledger-view') {
-        if (shouldRefresh !== false && getSavedUrl() && getSavedToken()) refreshData();
+      if (section === 'dashboard' || section === 'ledger-view' || section === 'print') {
+        if (shouldRefresh !== false && getSavedUrl() && getSavedToken()) refreshData().then(function(ok){ if(ok && section === 'print') refreshQ5Locations(); });
       }
       if (section === 'ledger-view') renderTable();
+      if (section === 'print') refreshQ5Locations();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -620,6 +686,7 @@
         const result = await apiGet('list', url, token);
         storeData = Array.isArray(result.records) ? result.records : [];
         refreshHistorySuggestions();
+        refreshQ5Locations();
         currentRole = result.role || currentRole;
         applyRoleUI();
         renderDashboard();
@@ -633,6 +700,165 @@
         setConnectionMessage('Google Sheets වෙතින් දත්ත ලබාගැනීමට නොහැකි විය. Settings සහ Apps Script deployment පරීක්ෂා කරන්න.');
         return false;
       }
+    }
+
+    function initializeQ5Controls() {
+      const ledgerSelect = document.getElementById('q5-ledger');
+      ledgerSelect.innerHTML = '<option value="">ලෙජරය තෝරන්න</option>' + LEDGERS.map(function(name) {
+        return '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>';
+      }).join('');
+      document.getElementById('q5-print-date').value = todayLocal();
+      ledgerSelect.addEventListener('change', function() {
+        q5SelectedLedger = ledgerSelect.value;
+        q5SelectedLocation = '';
+        refreshQ5Locations();
+        renderQ5Preview();
+      });
+      document.getElementById('q5-location').addEventListener('change', function() {
+        q5SelectedLocation = this.value;
+        renderQ5Preview();
+      });
+      ['q5-print-date','q5-unit-place','q5-holder','q5-phone'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() { if(q5Rows.length) renderQ5Preview(); });
+        document.getElementById(id).addEventListener('change', function() { if(q5Rows.length) renderQ5Preview(); });
+      });
+    }
+
+    function refreshQ5Locations() {
+      const select = document.getElementById('q5-location');
+      if (!select) return;
+      const ledger = document.getElementById('q5-ledger').value;
+      const previous = q5SelectedLocation || select.value;
+      const locations = Array.from(new Set(storeData.filter(function(r) {
+        return r.ledger === ledger && String(r.location || '').trim();
+      }).map(function(r) { return String(r.location).trim(); }))).sort(function(a,b){ return a.localeCompare(b,'si'); });
+      select.innerHTML = '<option value="">ස්ථානය තෝරන්න</option>' + locations.map(function(name) {
+        return '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>';
+      }).join('');
+      select.disabled = !ledger || !locations.length;
+      if (locations.indexOf(previous) !== -1) select.value = previous;
+      else { select.value = ''; q5SelectedLocation = ''; }
+      if (!ledger) select.innerHTML = '<option value="">පළමුව ලෙජරය තෝරන්න</option>';
+      else if (!locations.length) select.innerHTML = '<option value="">මෙම ලෙජරයට ස්ථාන දත්ත නැත</option>';
+    }
+
+    function q5DateDisplay(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      return match ? match[3] + '/' + match[2] + '/' + match[1] : raw;
+    }
+
+    function q5PageMarkup(records, pageNo, pageTotal) {
+      const unit = escapeHtml(document.getElementById('q5-unit-place').value || '');
+      const destination = escapeHtml(q5SelectedLocation);
+      const ledger = escapeHtml(q5SelectedLedger);
+      const holder = escapeHtml(document.getElementById('q5-holder').value || '');
+      const phone = escapeHtml(document.getElementById('q5-phone').value || '');
+      const printDate = q5DateDisplay(document.getElementById('q5-print-date').value);
+      let rows = '';
+      for (let i=0; i<20; i++) {
+        const r = records[i];
+        const absoluteIndex = (pageNo-1)*20+i;
+        rows += '<tr>' +
+          '<td><input data-q5-row="' + absoluteIndex + '" data-q5-field="item" value="' + (r?escapeHtml(r.item):'') + '"></td>' +
+          '<td><input value="" aria-label="In possession number"></td>' +
+          '<td><input value="" aria-label="Receipt date"></td>' +
+          '<td><input value="" aria-label="Receipt quantity"></td>' +
+          '<td><input value="" aria-label="Total receipts"></td>' +
+          '<td><input data-q5-row="' + absoluteIndex + '" data-q5-field="date" value="' + (r?escapeHtml(q5DateDisplay(r.date)):'') + '"></td>' +
+          '<td><input data-q5-row="' + absoluteIndex + '" data-q5-field="issuedQty" value="' + (r?escapeHtml(r.issuedQty):'') + '"></td>' +
+          '<td><input data-q5-row="' + absoluteIndex + '" data-q5-field="totalIssue" value="' + (r?escapeHtml(r.issuedQty):'') + '"></td>' +
+          '<td><input value="" aria-label="Remaining on change / authorised establishment"></td>' +
+        '</tr>';
+      }
+      return '<section class="q5-page">' +
+        '<div class="q5-header"><div>' +
+          '<div class="q5-headrow"><span>ස්ථානය</span><b>:</b><input class="q5-value" value="' + unit + '"></div>' +
+          '<div class="q5-headrow"><span>යුආඋ 05 මත නිකුත් කිරීම</span><b>:</b><input class="q5-value" value="' + destination + '"></div>' +
+          '<div class="q5-headrow"><span>යුආඋ 05 පත දරන්නා</span><b>:</b><input class="q5-value" value="' + holder + '"></div>' +
+          '<div class="q5-headrow"><span>දුරකථන අංකය</span><b>:</b><input class="q5-value" value="' + phone + '"></div>' +
+          '<div class="q5-headrow"><span>ලෙජරය</span><b>:</b><input class="q5-value" value="' + ledger + '"></div>' +
+        '</div><div class="q5-code">5 (ස්වේච්ඡා) ගජබා රෙජිමේන්තුව<br>ශ්‍රී.ආ.උ<br><span>Army Form Q</span><br>5<br>6/60</div></div>' +
+        '<div class="q5-headrow" style="grid-template-columns:auto 3mm auto 1fr;max-width:100%;margin:1mm 0 2mm 48mm"><span>දිනය</span><b>:</b><span class="q5-date-line">' + escapeHtml(printDate) + '</span><span></span></div>' +
+        '<table class="q5-table"><colgroup>' +
+          '<col style="width:29%"><col style="width:7%"><col style="width:7%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:9%"><col style="width:20%">' +
+        '</colgroup><thead>' +
+          '<tr class="q5-group"><th colspan="5">ලැබීම්</th><th colspan="4">නිකුත් කිරීම්</th></tr>' +
+          '<tr class="q5-english"><th colspan="5">RECEIPTS</th><th colspan="4">ISSUES</th></tr>' +
+          '<tr class="q5-vertical">' +
+            '<th><span class="q5-vertical-label">හැඳින්වීම<br>DESIGNATION</span></th>' +
+            '<th><span class="q5-vertical-label">In possession no.</span></th>' +
+            '<th><span class="q5-vertical-label">දිනය</span></th>' +
+            '<th><span class="q5-vertical-label">ප්‍රමාණය</span></th>' +
+            '<th><span class="q5-vertical-label">Total Receipts</span></th>' +
+            '<th><span class="q5-vertical-label">දිනය</span></th>' +
+            '<th><span class="q5-vertical-label">නිකුත් කිරීම් ප්‍රමාණය</span></th>' +
+            '<th><span class="q5-vertical-label">නිකුත් කිරීමේ එකතුව<br>Total Issues</span></th>' +
+            '<th><span class="q5-vertical-label">Remaining on Change<br>Authorised Establishment</span></th>' +
+          '</tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="q5-footer"><div class="q5-signatures">' +
+          '<div><div>භාරදුන් බවට අත්සන: ....................................</div><div style="margin-top:2mm">දිනය: 20...../...../..... දින</div><div class="q5-signature-space"></div><div>උපකරණ පාලන නිලධාරී</div></div>' +
+          '<div><div>භාරගත් බවට අත්සන: ....................................</div><div style="margin-top:2mm">දිනය: 20...../...../..... දින</div><div class="q5-signature-space"></div><div>වි.අ/ අංශ භාර නිලධාරී</div></div>' +
+        '</div><div class="q5-page-number">Page ' + pageNo + ' of ' + pageTotal + '</div></div></section>';
+    }
+
+    function renderQ5Preview() {
+      const ledger = document.getElementById('q5-ledger').value;
+      const location = document.getElementById('q5-location').value;
+      const pages = document.getElementById('q5-pages');
+      const empty = document.getElementById('q5-empty');
+      if (!ledger || !location) {
+        q5Rows = [];
+        pages.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.textContent = 'Q5 වගුව පෙන්වීමට ලෙජරය සහ ස්ථානය දෙකම තෝරන්න.';
+        document.getElementById('q5-result-count').textContent = 'ලෙජරය සහ ස්ථානය තෝරන්න.';
+        return;
+      }
+      q5SelectedLedger = ledger;
+      q5SelectedLocation = location;
+      q5Rows = storeData.filter(function(r) {
+        return r.ledger === ledger && normalizeKey(r.location) === normalizeKey(location);
+      }).slice().sort(function(a,b) {
+        return String(a.date || '').localeCompare(String(b.date || '')) || String(a.item || '').localeCompare(String(b.item || ''),'si');
+      }).map(function(r) {
+        return { item:String(r.item || ''), date:String(r.date || ''), issuedQty:String(Number(r.issuedQty || 0)), totalIssue:String(Number(r.issuedQty || 0)) };
+      });
+      if (!q5Rows.length) {
+        pages.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.textContent = 'තෝරාගත් ලෙජරය සහ ස්ථානය සඳහා දත්ත හමු නොවීය.';
+        document.getElementById('q5-result-count').textContent = 'දත්ත 0 · පිටු 0';
+        return;
+      }
+      empty.classList.add('hidden');
+      const chunks=[];
+      for(let i=0;i<q5Rows.length;i+=20) chunks.push(q5Rows.slice(i,i+20));
+      pages.innerHTML=chunks.map(function(chunk,index){return q5PageMarkup(chunk,index+1,chunks.length);}).join('');
+      pages.querySelectorAll('[data-q5-row]').forEach(function(input) {
+        input.addEventListener('input',function(){
+          const row=q5Rows[Number(input.dataset.q5Row)];
+          if(row) row[input.dataset.q5Field]=input.value;
+          if(input.dataset.q5Field==='issuedQty' && row) {
+            row.totalIssue=input.value;
+            const mirror=pages.querySelector('[data-q5-row="'+input.dataset.q5Row+'"][data-q5-field="totalIssue"]');
+            if(mirror) mirror.value=input.value;
+          }
+          if(input.dataset.q5Field==='totalIssue' && row) {
+            const mirror=pages.querySelector('[data-q5-row="'+input.dataset.q5Row+'"][data-q5-field="issuedQty"]');
+            if(mirror) mirror.value=input.value;
+          }
+        });
+      });
+      document.getElementById('q5-result-count').textContent=q5Rows.length.toLocaleString()+' දත්ත · පිටු '+chunks.length;
+    }
+
+    function printQ5() {
+      if (!q5Rows.length) { showToast('මුද්‍රණයට පෙර ලෙජරය සහ ස්ථානය තෝරා දත්ත ලබාගන්න.', true); return; }
+      document.body.classList.add('print-q5');
+      window.print();
+      setTimeout(function(){document.body.classList.remove('print-q5');},500);
     }
 
     function renderLedgerCards() {
